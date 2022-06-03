@@ -1,0 +1,14 @@
+{
+  "code": 200,
+  "status": true,
+  "message": "login success",
+  "data": {
+    "email": "user@mail.com",
+    "fullname": "User Testing",
+    "id": "a8482a81-7b51-44d5-99d7-84064ba78565",
+    "role": "ROLE_USER",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJFeHBpcmVzQXQiOjE2NTQyNTc2ODcsIlJvbGVzIjpbeyJpZCI6MiwibmFtZSI6IlJPTEVfVVNFUiJ9XSwiVXNlcklEIjoiYTg0ODJhODEtN2I1MS00NGQ1LTk5ZDctODQwNjRiYTc4NTY1IiwiVmVyaWZpZWQiOmZhbHNlfQ.LiCJsKS07Q9iumcmNeZfoVvTs2JTaCd4UZofXKhQyms",
+    "username": "usertesting",
+    "verified": false
+  }
+}

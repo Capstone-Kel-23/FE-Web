@@ -1,0 +1,11 @@
+{
+  "code": 201,
+  "status": true,
+  "message": "success create new user",
+  "data": {
+    "email": "user@mail.com",
+    "fullname": "User Testing",
+    "id": "a8482a81-7b51-44d5-99d7-84064ba78565",
+    "username": "usertesting"
+  }
+}
