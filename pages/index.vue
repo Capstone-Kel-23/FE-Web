@@ -2,7 +2,7 @@
   <v-container
     fluid
     class="fill-height bg-container"
-    :style="{ backgroundColor: fadeLogo > 0 ? 'var(--v-blue100-base)' : 'white' }"
+    :style="{ backgroundColor: fadeLogo > 0 ? 'var(--v-primary100-base)' : 'white' }"
   >
     <v-row
       justify="center"
@@ -53,7 +53,11 @@ export default {
 
     toNextPage () {
       setTimeout(() => {
-        this.$router.push('/welcome')
+        if (this.$store.state.user.token) {
+          this.$router.push('/user/dashboard')
+        } else {
+          this.$router.push('/welcome')
+        }
       }, 2000)
     }
   }

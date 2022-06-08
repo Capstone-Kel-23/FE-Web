@@ -3,7 +3,7 @@
     <!-- BEGIN SIDE BAR -->
     <v-navigation-drawer
       v-model="drawer"
-      color="blue400"
+      color="primary400"
       :mini-variant="miniVariant"
       :clipped="clipped"
       fixed
@@ -17,13 +17,13 @@
           <v-list-item
             v-if="!menu.subMenus"
             :to="menu.to"
-            color="blue"
+            color="primary"
             router
             exact
           >
             <v-list-item-action>
               <v-icon
-                color="blue100"
+                color="primary100"
                 size="20"
               >
                 {{ menu.icon }}
@@ -35,14 +35,14 @@
           </v-list-item>
           <v-list-group
             v-else
-            color="blue"
+            color="primary"
             no-action
           >
             <template #activator>
               <v-list-item class="ps-0">
                 <v-list-item-action>
                   <v-icon
-                    color="blue100"
+                    color="primary100"
                     size="20"
                   >
                     {{ menu.icon }}
@@ -57,7 +57,7 @@
               v-for="(subMenu, subIndex) in menu.subMenus"
               :key="subIndex"
               :to="subMenu.to"
-              color="blue"
+              color="primary"
               router
               exact
             >
@@ -77,13 +77,13 @@
         </div>
         <div>
           <v-list-item
-            color="blue"
+            color="primary"
             link
             @click="logoutDialog"
           >
             <v-list-item-action>
               <v-icon
-                color="blue100"
+                color="primary100"
                 size="20"
               >
                 mdi-logout-variant
@@ -102,7 +102,7 @@
     <v-app-bar
       :clipped-left="clipped"
       fixed
-      color="blue"
+      color="primary"
       dark
       app
     >
