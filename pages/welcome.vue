@@ -5,7 +5,7 @@
   >
     <v-row justify="center">
       <v-col cols="auto">
-        <v-container class="main-container-wrapper">
+        <v-container :class="mobile ? '' : 'main-container-wrapper'">
           <v-row justify="center">
             <v-col align-self="center">
               <!-- BEGIN LOGO -->
@@ -16,7 +16,7 @@
               />
               <c-text
                 font-weight="600"
-                color="blue400"
+                color="primary400"
                 class="text-center"
                 v-text="'TAGIHIN'"
               />
@@ -38,26 +38,26 @@
               <!-- BEGIN BUTTON LIST -->
               <v-btn
                 width="100%"
-                color="blue"
+                color="primary"
                 class="white--text mb-5"
                 link
-                to="/register"
                 v-text="'DAFTAR'"
               />
               <v-btn
                 width="100%"
-                color="blue"
-                class="mb-5"
+                color="primary"
+                class="mb-5 bg-white"
                 outlined
-                v-text="'MASUK'"
+                to="/login"
+                v-text="mobile ? 'Sudah memiliki akun? MASUK' : 'MASUK'"
               />
-              <v-btn
+              <!-- <v-btn
                 width="100%"
                 color="grey"
                 link
                 to="/user/dashboard"
                 v-text="'GUEST'"
-              />
+              /> -->
               <!-- END BUTTON LIST -->
             </v-col>
           </v-row>
@@ -79,6 +79,18 @@ export default {
     return {
       fadeLogo: 0
     }
+  },
+
+  computed: {
+    mobile () {
+      return this.$vuetify.breakpoint.mobile
+    }
   }
 }
 </script>
+
+<style scoped>
+  .bg-white {
+    background-color: white;
+  }
+</style>

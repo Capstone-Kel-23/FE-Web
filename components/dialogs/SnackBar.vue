@@ -5,20 +5,20 @@
       :key="index"
       v-model="snackbar.show"
       :style="{ 'top': calcMargin(index) }"
-      :color="snackbar.status === 200 ? 'white' : 'red'"
+      :color="snackbar.status >= 200 && snackbar.status < 300 ? 'white' : 'red'"
       :timeout="3000"
       top
       right
     >
       <span
-        :class="(snackbar.status === 200 ? 'blue' : 'white') + '--text'"
+        :class="(snackbar.status >= 200 && snackbar.status < 300 ? 'blue' : 'white') + '--text'"
         v-text="snackbar.message"
       />
       <template #action="{ attrs }">
         <v-btn
           icon
           v-bind="attrs"
-          :color="snackbar.status === 200 ? 'blue' : 'white'"
+          :color="snackbar.status >= 200 && snackbar.status < 300 ? 'blue' : 'white'"
           @click="removeSnackbar (index)"
         >
           <v-icon>

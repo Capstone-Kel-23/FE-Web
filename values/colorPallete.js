@@ -13,43 +13,43 @@ const colorPallete = {
     light: '#E3E3E3',
     dark: '#E3E3E3'
   },
-  blue: {
+  primary: {
     light: '#386190',
     dark: '#386190'
   },
-  blue100: {
+  primary100: {
     light: '#DAEEF9',
     dark: '#DAEEF9'
   },
-  blue200: {
+  primary200: {
     light: '#B8DCF3',
     dark: '#B8DCF3'
   },
-  blue300: {
+  primary300: {
     light: '#8CB9DD',
     dark: '#8CB9DD'
   },
-  blue400: {
+  primary400: {
     light: '#6692BC',
     dark: '#6692BC'
   },
-  blue500: {
+  primary500: {
     light: '#386190',
     dark: '#386190'
   },
-  blue600: {
+  primary600: {
     light: '#284B7B',
     dark: '#284B7B'
   },
-  blue700: {
+  primary700: {
     light: '#1C3867',
     dark: '#1C3867'
   },
-  blue800: {
+  primary800: {
     light: '#112753',
     dark: '#112753'
   },
-  blue900: {
+  primary900: {
     light: '#0A1B45',
     dark: '#0A1B45'
   },
