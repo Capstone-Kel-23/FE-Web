@@ -29,8 +29,13 @@ export default {
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
     { src: '~/plugins/persistedState.client.js' },
-    { src: '~/plugins/vue-apexchart.js' }
+    { src: '~/plugins/vue-apexchart.js' },
+    { src: '~/plugins/aos.js' }
   ],
+
+  purgeCSS: {
+    whitelist: ['aos-init', 'aos-animate', 'data-aos-delay', 'data-aos-duration', 'fade-up', 'zoom-in']
+  },
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -49,7 +54,8 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    'nuxt-purgecss'
   ],
 
   moment: {
