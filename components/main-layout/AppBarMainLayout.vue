@@ -35,6 +35,7 @@
               <v-col
                 v-for="(menu, index) in appbarMenus"
                 :key="index"
+                class="pe-0"
               >
                 <v-menu
                   v-if="menu.subMenus"
@@ -45,8 +46,8 @@
                 >
                   <template #activator="{ on, attrs }">
                     <div
-                      class="d-flex"
-                      style="cursor: pointer"
+                      :class="`d-flex pa-1 px-2 ${attrs['aria-expanded'] === 'false' ? 'menu-item-link' : 'menu-item-link-active'}`"
+                      :style="{ cursor: 'pointer' }"
                       v-bind="attrs"
                       v-on="on"
                     >
@@ -97,7 +98,7 @@
                   color="white"
                   font-size="16"
                   font-weight="600"
-                  class="ma-0"
+                  class="ma-0 menu-item-link pa-1 px-3"
                   v-text="menu.title"
                 />
               </v-col>
@@ -190,3 +191,19 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .menu-item-link:hover {
+    background-color: var(--v-primary800-base);
+    border-radius: 20px;
+    transition: 0.2s all;
+  }
+
+  .menu-item-link-active {
+    background-color: var(--v-primary700-base);
+    border: 2px solid var(--v-primary400-base);
+    border-radius: 20px;
+    margin: 0px;
+    transition: 0.2s all;
+  }
+</style>

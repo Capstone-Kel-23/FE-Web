@@ -82,6 +82,7 @@
                 v-text="'TAGIHIN'"
               />
               <c-text
+                font-size="14"
                 color="neutral800"
                 v-text="'Perangkat lunak akuntansi online, open source, dan gratis yang dibuat dengan teknologi modern. Lacak pendapatan dan pengeluaran Anda dengan mudah.'"
               />
@@ -92,7 +93,7 @@
               cols="auto"
             >
               <c-text
-                font-size="20"
+                font-size="18"
                 font-weight="bold"
                 color="white"
                 v-text="menu.title"
@@ -102,6 +103,7 @@
                 :key="subIndex"
               >
                 <c-text
+                  font-size="14"
                   color="white"
                   class="mb-1"
                   v-text="subMenu.title"
