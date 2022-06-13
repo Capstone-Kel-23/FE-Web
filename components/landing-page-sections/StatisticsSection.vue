@@ -5,7 +5,7 @@
       md="10"
       lg="10"
       data-aos="fade-up"
-      data-aos-delay="900"
+      data-aos-delay="300"
     >
       <c-text
         font-size="40"

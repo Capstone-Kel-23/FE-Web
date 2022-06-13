@@ -22,7 +22,7 @@
               class="py-5 px-15"
               elevation="4"
               data-aos="fade-up"
-              data-aos-delay="1000"
+              data-aos-delay="400"
             >
               <c-text
                 font-size="24"

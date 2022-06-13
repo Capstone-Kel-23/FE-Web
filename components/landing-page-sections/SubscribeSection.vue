@@ -2,7 +2,7 @@
   <v-row justify="space-around">
     <v-col
       data-aos="fade-up"
-      data-aos-delay="1100"
+      data-aos-delay="300"
     >
       <v-img
         src="/images/section/section-3.png"
@@ -12,7 +12,7 @@
     <v-col
       align-self="center"
       data-aos="fade-up"
-      data-aos-delay="1200"
+      data-aos-delay="400"
     >
       <c-text
         font-size="40"
