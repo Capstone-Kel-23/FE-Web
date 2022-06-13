@@ -126,7 +126,6 @@
               />
               <v-btn
                 color="primary"
-                elevation="8"
                 width="100%"
                 v-text="'Daftar'"
               />
