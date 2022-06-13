@@ -7,7 +7,7 @@
     >
       <v-img
         data-aos="fade-up"
-        data-aos-delay="600"
+        data-aos-delay="300"
         src="/images/section/section-2.png"
         class="mx-auto"
         max-width="450"
@@ -19,7 +19,7 @@
       md="8"
       lg="8"
       data-aos="fade-up"
-      data-aos-delay="700"
+      data-aos-delay="400"
     >
       <c-text
         font-size="22"
@@ -39,7 +39,7 @@
             <a href="https://play.google.com" target="_blank">
               <v-img
                 data-aos="fade-up"
-                data-aos-delay="800"
+                data-aos-delay="500"
                 src="/images/icon/section-devices/icon-playstore.png"
                 max-width="200"
               />
@@ -49,7 +49,7 @@
             <a href="https://apps.apple.com" target="_blank">
               <v-img
                 data-aos="fade-up"
-                data-aos-delay="800"
+                data-aos-delay="500"
                 src="/images/icon/section-devices/icon-appstore.png"
                 max-width="200"
               />
