@@ -34,6 +34,7 @@ export default {
   ],
 
   purgeCSS: {
+    enabled: ({ isDev, isClient }) => (!isDev && isClient),
     whitelist: ['aos-init', 'aos-animate', 'data-aos-delay', 'data-aos-duration', 'fade-up', 'zoom-in']
   },
 
