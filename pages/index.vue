@@ -1,71 +1,138 @@
 <template>
   <v-container
     fluid
-    class="fill-height bg-container"
-    :style="{ backgroundColor: fadeLogo > 0 ? 'var(--v-primary100-base)' : 'white' }"
+    class="pb-15"
+    :style="{ backgroundColor: 'var(--v-neutral400-base)' }"
   >
-    <v-row
-      justify="center"
-    >
-      <v-col cols="auto">
-        <v-img
-          max-width="182"
-          src="images/logo/logo.png"
-          class="splash-logo"
+    <v-row>
+      <v-col class="pa-0">
+        <!-- BEGIN CALL TO ACTION SECTION -->
+        <v-container
+          ref="callToAction"
+          fluid
+          :class="`${mobile ? 'pa-5 py-10' : 'pa-10 py-15'}`"
+          :style="{ backgroundColor: 'var(--v-primary800-base)' }"
+        >
+          <CallToActionSection />
+        </v-container>
+        <!-- END CALL TO ACTION SECTION -->
+
+        <!-- BEGIN FEATURES SECTION -->
+        <v-container
+          ref="features"
+          fluid
+        >
+          <FeaturesSection />
+        </v-container>
+        <!-- END FEATURES SECTION -->
+
+        <!-- BEGIN AVAILABLE DEVICES SECTION -->
+        <v-container
+          ref="devices"
+          :class="`${mobile ? 'pa-5 py-10' : 'pa-10 py-15'}`"
+        >
+          <DevicesSection />
+        </v-container>
+        <!-- END AVAILABLE DEVICES SECTION -->
+
+        <!-- BEGIN STATISTICS SECTION -->
+        <v-container
+          ref="statistics"
+          fluid
+          :class="`${mobile ? 'pa-5 py-10' : 'pa-10 py-15'}`"
           :style="{
-            opacity: fadeLogo,
-            transform: `scale(${fadeLogo})`
+            backgroundColor: 'var(--v-neutral200-base)',
+            borderRadius: '20px',
+            paddingBottom: breakPoint.md ? '100px !important' : ''
           }"
-        />
+        >
+          <StatisticsSection />
+        </v-container>
+        <v-container
+          fluid
+          :class="`${mobile ? 'pa-5 pb-10' : 'pa-10 pb-0'}`"
+        >
+          <StatisticsCardSection />
+        </v-container>
+        <!-- END STATISTICS SECTION -->
+
+        <!-- BEGIN SUBSCRIBE SECTION -->
+        <v-container
+          ref="subscribe"
+          :class="`${mobile ? 'pa-5 py-10' : 'pa-10 py-15'}`"
+          :style="{
+            backgroundColor: 'var(--v-neutral200-base)',
+            borderRadius: '20px',
+          }"
+        >
+          <SubscribeSection />
+        </v-container>
+        <!-- END SUBSCRIBE SECTION -->
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-export default {
-  name: 'SplashScreenPage',
+import CallToActionSection from '~/components/landing-page-sections/CallToActionSection.vue'
+import FeaturesSection from '~/components/landing-page-sections/FeaturesSection.vue'
+import DevicesSection from '~/components/landing-page-sections/DevicesSection.vue'
+import StatisticsSection from '~/components/landing-page-sections/StatisticsSection.vue'
+import StatisticsCardSection from '~/components/landing-page-sections/StatisticsCardSection.vue'
+import SubscribeSection from '~/components/landing-page-sections/SubscribeSection.vue'
 
-  layout: 'auth',
+export default {
+  name: 'LandingPage',
+
+  components: {
+    CallToActionSection,
+    FeaturesSection,
+    DevicesSection,
+    StatisticsSection,
+    StatisticsCardSection,
+    SubscribeSection
+  },
+
+  layout: 'main',
 
   data () {
     return {
-      fadeLogo: 0
+      options: {
+        duration: 300,
+        offset: 0,
+        easing: 'easeInOutCubic'
+      }
     }
   },
 
-  mounted () {
-    this.fadeLogo = 0
-    this.showLogo()
-  },
-
-  methods: {
-    showLogo () {
-      setTimeout(() => {
-        this.fadeLogo += 0.1
-        if (this.fadeLogo < 0.9) {
-          this.showLogo()
-        } else {
-          this.toNextPage()
-        }
-      }, 80)
+  computed: {
+    mobile () {
+      return this.$vuetify.breakpoint.mobile
     },
 
-    toNextPage () {
-      setTimeout(() => {
-        if (this.$store.state.user.token) {
-          this.$router.push('/user/dashboard')
-        } else {
-          this.$router.push('/welcome')
-        }
-      }, 2000)
+    breakPoint () {
+      return {
+        sm: this.$vuetify.breakpoint.sm,
+        md: this.$vuetify.breakpoint.md,
+        lg: this.$vuetify.breakpoint.lg
+      }
     }
   }
 }
 </script>
 
-<style scoped>
-  .splash-logo {
-    transition: linear 0.1s;
+<style>
+  @media screen and (max-width: 600px) {
+    [data-aos] {
+      pointer-events: auto !important;
+    }
+
+    html:not(.no-js) [data-aos^=fade][data-aos^=fade] {
+      opacity: 1 !important;
+    }
+
+    html:not(.no-js) [data-aos=fade-up] {
+      transform: none !important;
+    }
   }
 </style>

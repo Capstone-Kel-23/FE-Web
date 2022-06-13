@@ -73,7 +73,7 @@
                 <c-text
                   v-if="mobile"
                   class="mb-15"
-                  font-size="12"
+                  font-size="14"
                   v-text="'Masukkan email yang kamu daftarkan di Tagihin agar kamu dapat menerima instruksi untuk mereset password kamu melalui email.'"
                 />
                 <c-text
