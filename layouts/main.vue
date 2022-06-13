@@ -6,236 +6,17 @@
       content-class="mobile-nav-dialog ma-0"
       transition="dialog-top-transition"
     >
-      <v-card
-        width="100%"
-        color="primary"
-        class="pa-3"
-      >
-        <v-container>
-          <v-row justify="space-between" class="px-3">
-            <v-col
-              cols="auto"
-              align-self="center"
-            >
-              <v-img
-                src="/images/logo/circle-logo.png"
-              />
-            </v-col>
-            <v-col
-              cols="auto"
-              align-self="center"
-            >
-              <v-btn
-                icon
-                color="red"
-                @click="mobileMenuDialog = !mobileMenuDialog"
-              >
-                <v-icon color="white">
-                  mdi-window-close
-                </v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <div
-                v-for="(menu, index) in appbarMenus"
-                :key="index"
-              >
-                <v-expansion-panels
-                  accordion
-                  dark
-                  flat
-                >
-                  <v-expansion-panel
-                    v-if="menu.subMenus"
-                  >
-                    <v-expansion-panel-header
-                      color="primary"
-                      class="pa-4"
-                    >
-                      {{ menu.title }}
-                    </v-expansion-panel-header>
-                    <v-expansion-panel-content color="primary">
-                      <v-list-item
-                        v-for="(subMenu, subIndex) in menu.subMenus"
-                        :key="subIndex"
-                        dense
-                      >
-                        <v-list-item-icon class="me-5">
-                          <v-img
-                            max-width="40"
-                            :src="subMenu.iconImage"
-                          />
-                        </v-list-item-icon>
-                        <v-list-item-title
-                          v-text="subMenu.title"
-                        />
-                      </v-list-item>
-                    </v-expansion-panel-content>
-                  </v-expansion-panel>
-                  <v-list-item v-else>
-                    <v-list-item-title
-                      class="white--text"
-                      v-text="menu.title"
-                    />
-                  </v-list-item>
-                </v-expansion-panels>
-              </div>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
+      <AppBarMobileMainLayout
+        :appbar-menus="appbarMenus"
+        :mobile-menu-dialog="mobileMenuDialog"
+        @close-mobile-menu-dialog="mobileMenuDialog = !mobileMenuDialog"
+      />
     </v-dialog>
-    <v-app-bar
-      color="primary900"
-      app
-    >
-      <v-container v-if="!mobile">
-        <v-row justify="space-between">
-          <v-col cols="auto" align-self="center">
-            <v-container>
-              <v-row>
-                <v-col
-                  cols="auto"
-                  class="px-0"
-                  align-self="center"
-                >
-                  <v-img
-                    src="/images/logo/circle-logo.png"
-                  />
-                </v-col>
-                <v-col align-self="center">
-                  <c-text
-                    color="primary400"
-                    class="ma-0"
-                    font-weight="bold"
-                    font-size="24"
-                    v-text="'TAGIHIN'"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-col>
-          <v-col cols="auto" align-self="center">
-            <v-container>
-              <v-row justify="center">
-                <v-col
-                  v-for="(menu, index) in appbarMenus"
-                  :key="index"
-                >
-                  <v-menu
-                    v-if="menu.subMenus"
-                    rounded="xl"
-                    open-on-click
-                    offset-y
-                    right
-                  >
-                    <template #activator="{ on, attrs }">
-                      <div
-                        class="d-flex"
-                        style="cursor: pointer"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <c-text
-                          color="white"
-                          font-size="16"
-                          font-weight="600"
-                          class="ma-0 me-1"
-                          v-text="menu.title"
-                        />
-                        <v-icon
-                          color="white"
-                          style="transition: all 0.4s"
-                          v-text="attrs['aria-expanded'] === 'false' ? 'mdi-chevron-down' : 'mdi-chevron-up' "
-                        />
-                      </div>
-                    </template>
-                    <v-list>
-                      <v-list-item
-                        v-for="(subMenu, subIndex) in menu.subMenus"
-                        :key="subIndex"
-                      >
-                        <v-list-item-icon class="me-2">
-                          <v-img
-                            :src="subMenu.iconImage"
-                          />
-                        </v-list-item-icon>
-                        <v-list-item-title>
-                          <c-text
-                            font-weight="600"
-                            font-size="20"
-                            class="ma-0"
-                            v-text="subMenu.title"
-                          />
-                          <c-text
-                            color="grey"
-                            class="ma-0"
-                            font-weight="500"
-                            font-size="14"
-                            v-text="subMenu.subTitle"
-                          />
-                        </v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                  <c-text
-                    v-else
-                    color="white"
-                    font-size="16"
-                    font-weight="600"
-                    class="ma-0"
-                    v-text="menu.title"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-col>
-          <v-col cols="auto" align-self="center">
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-btn
-                    color="white"
-                    class="primary--text"
-                    @click="() => $router.push('/login')"
-                    v-text="'Masuk'"
-                  />
-                </v-col>
-                <v-col>
-                  <v-btn
-                    color="primary"
-                    class="white--text"
-                    v-text="'Daftar'"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container v-else>
-        <v-row justify="space-between">
-          <v-col cols="auto" align-self="center">
-            <v-img
-              src="/images/logo/circle-logo.png"
-            />
-          </v-col>
-          <v-col cols="auto" align-self="center">
-            <v-btn
-              icon
-              dark
-              @click="mobileMenuDialog = !mobileMenuDialog"
-            >
-              <v-icon color="white">
-                mdi-view-headline
-              </v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-app-bar>
+    <AppBarMainLayout
+      :appbar-menus="appbarMenus"
+      :mobile-menu-dialog="mobileMenuDialog"
+      @open-mobile-menu-dialog="mobileMenuDialog = !mobileMenuDialog"
+    />
     <v-main>
       <Nuxt />
     </v-main>
@@ -250,13 +31,17 @@
 <script>
 import DefaultLayout from './default.vue'
 import FooterMainLayout from '~/components/main-layout/FooterMainLayout.vue'
+import AppBarMainLayout from '@/components/main-layout/AppBarMainLayout.vue'
+import AppBarMobileMainLayout from '@/components/main-layout/AppBarMobileMainLayout.vue'
 
 export default {
   name: 'MainLayout',
 
   components: {
     DefaultLayout,
-    FooterMainLayout
+    FooterMainLayout,
+    AppBarMainLayout,
+    AppBarMobileMainLayout
   },
 
   data () {
@@ -303,8 +88,8 @@ export default {
 }
 </script>
 
-<style scoped>
-  >>> .mobile-nav-dialog {
+<style lang="scss" scoped>
+  ::v-deep .mobile-nav-dialog {
     align-self: flex-start;
   }
 </style>
