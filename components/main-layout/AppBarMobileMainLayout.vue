@@ -102,6 +102,7 @@
                 width="100%"
                 color="primary600"
                 class="white--text"
+                @click="() => $router.push('/register')"
                 v-text="'Daftar'"
               />
             </v-col>

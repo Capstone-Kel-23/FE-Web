@@ -1,140 +1,91 @@
 <template>
-  <v-container
-    fluid
-    class="fill-height"
+  <v-col
+    sm="10"
+    md="8"
+    lg="6"
   >
-    <v-row justify="center">
-      <v-col
-        sm="10"
-        md="8"
-        lg="6"
-      >
-        <v-container v-if="!mobile">
-          <v-row justify="center">
-            <v-col
-              cols="auto"
-              align-self="center"
-            >
-              <v-img
-                src="/images/logo/logo.png"
-                max-width="60"
-                class="mx-auto"
-              />
-            </v-col>
-            <v-col
-              cols="auto"
-              align-self="center"
-            >
-              <c-text
-                font-size="40"
-                font-weight="bold"
-                color="primary400"
-                class="ma-0"
-                v-text="'TAGIHIN'"
-              />
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-container
-          :class="`mb-5 ${mobile ? '' : 'bg-container pa-10'}`"
-          style="border-radius: 10px"
-        >
-          <v-row justify="center">
-            <v-col>
-              <v-container v-if="!mobile">
-                <v-row>
-                  <v-col cols="auto" class="px-0">
-                    <v-btn
-                      icon
-                      color="black"
-                      link
-                      @click="() => $router.go(-1)"
-                    >
-                      <v-icon size="40">
-                        mdi-chevron-left
-                      </v-icon>
-                    </v-btn>
-                  </v-col>
-                  <v-col>
-                    <c-text
-                      font-size="24"
-                      font-weight="bold"
-                      class="text-center mb-10"
-                      v-text="headerTitle"
-                    />
-                  </v-col>
-                </v-row>
-              </v-container>
-              <v-form
-                ref="form"
-                v-model="valid"
-                lazy-validation
-              >
-                <v-text-field
-                  v-model="email"
-                  :rules="emailRules"
-                  placeholder="Masukkan Email"
-                  dense
-                  solo
-                  flat
-                  background-color="white"
-                  style="font-size: 14px"
-                  prepend-inner-icon="mdi-email"
+    <v-container
+      :class="`mb-5 ${mobile ? '' : 'bg-container pa-10'}`"
+      style="border-radius: 10px"
+    >
+      <v-row justify="center">
+        <v-col>
+          <c-text
+            v-if="!mobile"
+            font-size="24"
+            font-weight="bold"
+            class="text-center mb-10"
+            v-text="headerTitle"
+          />
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
+          >
+            <v-text-field
+              v-model="email"
+              :rules="emailRules"
+              placeholder="Masukkan Email"
+              dense
+              solo
+              flat
+              background-color="white"
+              style="font-size: 14px"
+              prepend-inner-icon="mdi-email"
+            />
+            <v-text-field
+              v-model="password"
+              :rules="passwordRules"
+              placeholder="Masukkan Password"
+              :type="viewPassword ? 'text' : 'password'"
+              dense
+              solo
+              flat
+              background-color="white"
+              style="font-size: 14px"
+              prepend-inner-icon="mdi-lock"
+              :append-icon="viewPassword ? 'mdi-eye-off' : 'mdi-eye'"
+              @click:append="viewPassword = !viewPassword"
+            />
+            <v-container class="mb-10">
+              <v-row justify="end">
+                <nuxt-link
+                  to="/forgot"
+                  class="link-text"
+                  v-text="'Lupa Password'"
                 />
-                <v-text-field
-                  v-model="password"
-                  :rules="passwordRules"
-                  placeholder="Masukkan Password"
-                  :type="viewPassword ? 'text' : 'password'"
-                  dense
-                  solo
-                  flat
-                  background-color="white"
-                  style="font-size: 14px"
-                  prepend-inner-icon="mdi-lock"
-                  :append-icon="viewPassword ? 'mdi-eye-off' : 'mdi-eye'"
-                  @click:append="viewPassword = !viewPassword"
-                />
-                <v-container class="mb-10">
-                  <v-row justify="end">
-                    <nuxt-link
-                      to="/forgot"
-                      class="link-text"
-                      v-text="'Lupa Password'"
-                    />
-                  </v-row>
-                </v-container>
-                <v-btn
-                  width="100%"
-                  color="primary"
-                  :disabled="email != '' && password != '' ? false : true"
-                  @click="submit"
-                  v-text="headerTitle"
-                />
-              </v-form>
-            </v-col>
-          </v-row>
-        </v-container>
-        <v-container v-if="!mobile">
-          <v-row justify="center">
-            <div>
-              <c-text
-                color="primary"
-                font-weight="bold"
-                font-size="14"
-                v-text="'Belum punya akun ?'"
-              />
-              <v-btn
-                color="primary"
-                width="100%"
-                v-text="'Daftar'"
-              />
-            </div>
-          </v-row>
-        </v-container>
-      </v-col>
-    </v-row>
-  </v-container>
+              </v-row>
+            </v-container>
+            <v-btn
+              width="100%"
+              color="primary"
+              :disabled="email != '' && password != '' ? false : true"
+              @click="submit"
+              v-text="headerTitle"
+            />
+          </v-form>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container v-if="!mobile">
+      <v-row justify="center">
+        <div>
+          <c-text
+            color="primary"
+            font-weight="bold"
+            font-size="14"
+            v-text="'Belum punya akun ?'"
+          />
+          <v-btn
+            color="primary"
+            width="100%"
+            @click="() => $router.push('/register')"
+            v-text="'Daftar'"
+          />
+        </div>
+      </v-row>
+    </v-container>
+  </v-col>
 </template>
 
 <script>
