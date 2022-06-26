@@ -32,33 +32,33 @@
     </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
-      :color="mobile ? 'primary400' : 'white'"
+      :color="mobile ? 'primary' : 'white'"
       :elevation="mobile ? '0' : ''"
       class="app-bar-wrapper"
       :dense="mobile"
       fixed
       app
     >
-      <v-container fluid>
+      <v-container>
         <v-row justify="space-between">
-          <v-col cols="auto" align-self="center" class="ps-0">
-            <div
-              v-if="mobile"
-              class="mobile-app-bar-logo d-flex px-3"
-              @click.stop="drawer = !drawer"
-            >
-              <v-img
-                max-width="25"
-                max-height="25"
-                src="/images/logo/circle-logo.png"
-              />
-              <c-text
-                font-weight="600"
-                color="primary200"
-                class="ma-0 ms-1"
-                v-text="'TAGIHIN'"
-              />
-            </div>
+          <v-col v-if="!mobile" />
+          <v-col
+            v-if="mobile"
+            cols="auto"
+            align-self="center"
+            class="d-flex"
+          >
+            <v-img
+              max-width="25"
+              max-height="25"
+              src="/images/logo/circle-logo.png"
+            />
+            <c-text
+              font-weight="600"
+              color="white"
+              class="ma-0 ms-1"
+              v-text="'TAGIHIN'"
+            />
           </v-col>
           <v-col cols="auto">
             <v-container>
@@ -140,18 +140,15 @@
       <v-btn
         v-for="(menu, index) in bottomMenus"
         :key="index"
+        :to="menu.to"
+        exact
       >
         <c-text
           font-size="10"
           class="ma-0"
           v-text="menu.title"
         />
-        <v-img
-          max-width="25"
-          max-height="25"
-          :src="menu.icon"
-          :lazy-src="menu.icon"
-        />
+        <v-icon>{{ menu.icon }}</v-icon>
       </v-btn>
     </v-bottom-navigation>
   </default-layout>
@@ -245,13 +242,6 @@ export default {
   .user-btn-wrapper:hover {
     background-color: var(--v-grey-base);
     cursor: pointer;
-  }
-
-  .mobile-app-bar-logo {
-    background-color: var(--v-primary900-base);
-    border-radius: 0px 10px 10px 0px;
-    padding: 11px;
-    padding-top: 12px;
   }
 
   .app-bar-wrapper >>> .v-toolbar__content {
