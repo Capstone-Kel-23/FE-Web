@@ -1,32 +1,27 @@
 export default [
   {
     title: 'Dasboard',
-    icon: '/images/icon/bottom-app-bar/home.svg',
-    iconActive: '/images/icon/bottom-app-bar/home-active.svg',
+    icon: 'mdi-home',
     to: '/dashboard'
   },
   {
     title: 'Invoices',
-    icon: '/images/icon/bottom-app-bar/bill.svg',
-    iconActive: '/images/icon/bottom-app-bar/bill-active.svg',
+    icon: 'mdi-receipt',
     to: '/invoices'
   },
   {
     title: 'Clients',
-    icon: '/images/icon/bottom-app-bar/people.svg',
-    iconActive: '/images/icon/bottom-app-bar/people-active.svg',
+    icon: 'mdi-account-group',
     to: '/clients'
   },
   {
     title: 'Reports',
-    icon: '/images/icon/bottom-app-bar/combo-chart.svg',
-    iconActive: '/images/icon/bottom-app-bar/combo-chart-active.svg',
+    icon: 'mdi-finance',
     to: '/reports'
   },
   {
     title: 'Settings',
-    icon: '/images/icon/bottom-app-bar/settings.svg',
-    iconActive: '/images/icon/bottom-app-bar/settings-active.svg',
+    icon: 'mdi-cog',
     to: '/settings'
   }
 ]
