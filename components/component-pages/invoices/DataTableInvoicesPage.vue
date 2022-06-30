@@ -52,54 +52,56 @@
       :items="invoices"
       :page.sync="page"
       :items-per-page="itemsPerPage"
+      :search="searchKeyword"
       hide-default-footer
       class="elevation-2 data-table-wrapper"
       show-select
+      :custom-filter="filterByCategory"
       @page-count="pageCount = $event"
     >
-      <template #item.id="{ item }">
+      <template #[`item.id`]="{ item }">
         <c-text
           font-size="12"
           class="ma-0"
           v-text="item.id"
         />
       </template>
-      <template #item.date="{ item }">
+      <template #[`item.date`]="{ item }">
         <c-text
           font-size="12"
           class="ma-0"
           v-text="item.date"
         />
       </template>
-      <template #item.to="{ item }">
+      <template #[`item.to`]="{ item }">
         <c-text
           font-size="12"
           class="ma-0"
           v-text="item.to"
         />
       </template>
-      <template #item.amount="{ item }">
+      <template #[`item.amount`]="{ item }">
         <c-text
           font-size="12"
           class="ma-0"
           v-text="format.currency(item.amount)"
         />
       </template>
-      <template #item.dueDate="{ item }">
+      <template #[`item.dueDate`]="{ item }">
         <c-text
           font-size="12"
           class="ma-0"
           v-text="item.dueDate"
         />
       </template>
-      <template #item.statusInvoice="{ item }">
+      <template #[`item.statusInvoice`]="{ item }">
         <v-chip
           style="font-size: 12px"
           :color="item.statusInvoice === 0 ? 'grey' : 'primary200'"
           v-text="item.statusInvoice === 0 ? 'Unpaid' : 'Paid'"
         />
       </template>
-      <template #item.action="{ item }">
+      <template #[`item.action`]="{ item }">
         <v-btn
           icon
           small
@@ -111,7 +113,7 @@
           />
         </v-btn>
       </template>
-      <template #item.statusPayment="{ item }">
+      <template #[`item.statusPayment`]="{ item }">
         <c-text
           font-size="12"
           class="ma-0"
@@ -227,12 +229,178 @@
           <v-col cols="auto" class="pe-0">
             <v-btn
               color="primary"
+              @click="importDialog = !importDialog"
               v-text="'Import'"
             />
           </v-col>
         </v-col>
       </v-row>
     </v-container>
+    <v-dialog
+      v-model="importDialog"
+      max-width="600"
+    >
+      <v-card
+        rounded="lg"
+      >
+        <v-container
+          fluid
+          class="px-0"
+        >
+          <v-row
+            justify="space-between"
+            class="mx-3 my-1"
+          >
+            <v-col cols="auto">
+              <c-text
+                font-size="24"
+                font-weight="bold"
+                class="ma-0"
+                v-text="'Import Invoices'"
+              />
+            </v-col>
+            <v-col cols="auto">
+              <v-btn
+                color="primary"
+                icon
+                @click="importDialog = !importDialog"
+              >
+                <v-icon size="30">
+                  mdi-window-close
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-divider />
+          <div class="px-15 py-10">
+            <input
+              ref="fileBrowser"
+              type="file"
+              accept=".jpg, .png, .jpeg"
+              style="display: none"
+              @input.prevent="onDrop($event.target)"
+            >
+            <v-container
+              :class="`import-file-dropzone rounded-xl ${dragover ? 'import-file-dropzone-active' : ''}`"
+              @drop.prevent="onDrop($event.dataTransfer)"
+              @dragover.prevent="dragover = true"
+              @dragenter.prevent="dragover = true"
+              @dragleave.prevent="dragover = false"
+              @click="$refs.fileBrowser.click()"
+            >
+              <v-img
+                class="mx-auto mt-5"
+                max-width="90"
+                max-height="90"
+                src="/images/icon/upload-cloud-icon.svg"
+                lazy-src="/images/icon/upload-cloud-icon.svg"
+              />
+              <c-text
+                font-size="18"
+                class="text-center ma-0"
+                v-text="'Drag and drop File Here to Upload'"
+              />
+              <c-text
+                class="text-center mb-5"
+                v-text="'MAX. File Size : 10MB'"
+              />
+            </v-container>
+            <v-list v-if="importedFiles.length > 0">
+              <v-list-item
+                v-for="(file, index) in importedFiles"
+                :key="index"
+                dense
+                class="elevation-2 mt-3 rounded-lg"
+              >
+                <v-list-item-action>
+                  <v-icon
+                    color="black"
+                    size="35"
+                    v-text="'mdi-microsoft-excel'"
+                  />
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title class="pa-0">
+                    <c-text
+                      class="ma-0"
+                      font-size="14"
+                      font-weight="600"
+                      v-text="file.name"
+                    />
+                    <c-text
+                      class="ma-0"
+                      font-size="12"
+                      color="neutral700"
+                      v-text="formatFileSize(file.size)"
+                    />
+                  </v-list-item-title>
+                </v-list-item-content>
+                <v-btn
+                  color="red"
+                  icon
+                  @click="removeImportedFile(index)"
+                >
+                  <v-icon
+                    v-text="'mdi-window-close'"
+                  />
+                </v-btn>
+              </v-list-item>
+            </v-list>
+            <v-container v-if="importedFiles.length > 0">
+              <v-row justify="end">
+                <v-btn
+                  class="mt-5"
+                  color="primary"
+                  @click="submitImport"
+                  v-text="'Submit'"
+                />
+              </v-row>
+            </v-container>
+          </div>
+        </v-container>
+      </v-card>
+    </v-dialog>
+    <v-dialog
+      v-model="successImportDialog"
+      max-width="500"
+    >
+      <v-card class="pa-5">
+        <v-container
+          fluid
+        >
+          <v-row justify="end" class="mb-5">
+            <v-btn
+              icon
+              color="primary"
+              @click="successImportDialog = !successImportDialog"
+            >
+              <v-icon
+                size="30"
+                v-text="'mdi-window-close'"
+              />
+            </v-btn>
+          </v-row>
+          <v-row
+            justify="center"
+            class="flex-column align-center"
+          >
+            <v-img
+              max-width="100"
+              max-height="100"
+              class="mb-5"
+              src="/images/icon/success-icon.svg"
+              lazy-src="/images/icon/success-icon.svg"
+            />
+            <c-text
+              font-size="24"
+              font-weight="bold"
+              class="text-center"
+              v-text="'File Uploaded Successfully!'"
+            />
+          </v-row>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <!-- END TABLE -->
   </v-container>
 </template>
@@ -245,6 +413,10 @@ export default {
 
   data () {
     return {
+      importDialog: false,
+      successImportDialog: false,
+      dragover: false,
+      importedFiles: [],
       searchKeyword: '',
       selectedCategory: 'all',
       page: 1,
@@ -259,15 +431,17 @@ export default {
       ],
       selectedRow: [],
       headers: [
-        {
-          text: 'Invoice ID',
-          value: 'id'
-        },
+        { text: 'Invoice ID', value: 'id' },
         { text: 'Invoice Date', value: 'date', align: 'center' },
         { text: 'Invoice To', value: 'to', align: 'center' },
         { text: 'Amount', value: 'amount', align: 'center' },
         { text: 'Due Date', value: 'dueDate', align: 'center' },
-        { text: 'Status Invoice', value: 'statusInvoice', align: 'center' },
+        {
+          text: 'Status Invoice',
+          value: 'statusInvoice',
+          align: 'center',
+          filter: this.filterByCategory
+        },
         { text: 'Status Payment', value: 'statusPayment', align: 'center' },
         { text: 'Action', value: 'action', align: 'center' }
       ],
@@ -342,9 +516,41 @@ export default {
       this.selectedCategory = category.toLowerCase()
     },
 
+    filterByCategory (value) {
+      const category = value === 0 ? 'unpaid' : 'paid'
+      if (this.selectedCategory.toLowerCase() === 'all') { return true }
+      return this.selectedCategory.toLowerCase() === category
+    },
+
     checkToAll () {},
 
-    deleteInvoice (invoiceId) {}
+    deleteInvoice (invoiceId) {},
+
+    onDrop (e) {
+      this.dragover = false
+      this.importedFiles.push(e.files[0])
+      const lastFile = this.importedFiles[this.importedFiles.length - 1]
+      const extension = (lastFile.name).split('.')
+      this.importedFiles[this.importedFiles.length - 1].extension = extension[extension.length - 1]
+    },
+
+    removeImportedFile (index) {
+      this.importedFiles.splice(index, 1)
+    },
+
+    submitImport () {
+      this.importDialog = !this.importDialog
+      this.successImportDialog = !this.successImportDialog
+    },
+
+    formatFileSize (bytes, decimalPoint = null) {
+      if (bytes === 0) { return '0 Bytes' }
+      const k = 1000
+      const dm = decimalPoint || 2
+      const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+      const i = Math.floor(Math.log(bytes) / Math.log(k))
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+    }
   }
 }
 </script>
@@ -407,5 +613,17 @@ export default {
 
   .btn-pagination >>> i:first-child {
     transform: translateX(7.5px);
+  }
+
+  .import-file-dropzone {
+    border: 1px dashed var(--v-primary-base);
+    padding: 4px !important;
+    cursor: pointer;
+  }
+
+  .import-file-dropzone-active {
+    border: 5px dotted var(--v-primary-base);
+    background-color: var(--v-primary100-base);
+    padding: 0px !important;
   }
 </style>
