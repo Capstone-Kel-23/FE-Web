@@ -60,8 +60,15 @@
               width="100%"
               color="primary"
               :disabled="email != '' && password != '' ? false : true"
-              @click="submit"
               v-text="headerTitle"
+            />
+            <v-btn
+              width="100%"
+              class="mt-3"
+              dark
+              color="green"
+              @click="() => $router.push('/dashboard')"
+              v-text="'Guest'"
             />
           </v-form>
         </v-col>
