@@ -5,10 +5,7 @@
   >
     <v-row>
       <v-col>
-        <v-container
-          fluid
-          class="pa-0"
-        >
+        <v-container class="pa-0">
           <v-row>
             <!-- BEGIN HEADER TITLE -->
             <c-text
@@ -16,22 +13,15 @@
               font-size="32"
               v-text="'Clients'"
             />
-            <!-- <v-text-field
-              v-if="mobile"
-              v-model="searchKeyword"
-              class="search-field-wrapper mb-5"
-              placeholder="Search Invoice"
-              hide-details=""
-              color="primary"
-              background-color="white"
-              append-icon="mdi-magnify"
-              outlined
-              dense
-            /> -->
             <!-- END HEADER TITLE -->
           </v-row>
           <v-row>
-            <DataTableClientsPage />
+            <DataTableClientsPage
+              v-if="!mobile"
+            />
+            <DataTableMobileClientsPage
+              v-else
+            />
           </v-row>
         </v-container>
       </v-col>
@@ -41,21 +31,17 @@
 
 <script>
 import DataTableClientsPage from '@/components/component-pages/clients/DataTableClientsPage.vue'
+import DataTableMobileClientsPage from '@/components/component-pages/clients/DataTableMobileClientsPage.vue'
 
 export default {
   name: 'ClientsPage',
 
   components: {
-    DataTableClientsPage
+    DataTableClientsPage,
+    DataTableMobileClientsPage
   },
 
   layout: 'dashboard',
-
-  data () {
-    return {
-      searchKeyword: ''
-    }
-  },
 
   computed: {
     mobile () {
