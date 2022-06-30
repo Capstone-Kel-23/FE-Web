@@ -4,17 +4,19 @@
     :class="`main-content-bg fill-height align-start ${mobile ? 'pa-5' : 'pa-10'}`"
   >
     <v-row>
-      <v-col>
+      <v-col class="mt-5">
         <!-- BEGIN HEADER TITLE -->
         <c-text
+          v-if="!mobile"
           font-size="32"
           v-text="'Dashboard'"
         />
         <v-text-field
           v-if="mobile"
           v-model="searchKeyword"
-          class="search-field-wrapper"
+          class="search-field-wrapper mb-5"
           placeholder="Search Invoice"
+          hide-details=""
           color="primary"
           background-color="white"
           append-icon="mdi-magnify"

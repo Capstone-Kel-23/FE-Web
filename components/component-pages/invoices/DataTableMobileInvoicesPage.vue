@@ -16,38 +16,38 @@
       <v-container class="mt-3">
         <v-row justify="space-around">
           <v-col
-            :class="`${selectedCategory === 'all' ? 'active-tab-catagory-wrapper' : ''} pb-1`"
-            cols="auto"
+            :class="`tab-catagory-wrapper ${selectedCategory === 'all' ? 'tab-catagory-wrapper-active' : ''} pb-1`"
+            cols="3"
             @click="changeCategory('All')"
           >
             <c-text
               font-size="14"
               :color="selectedCategory === 'all' ? 'black' : 'primary'"
-              :class="`tab-list-category ma-0 ${selectedCategory === 'all' ? '' : 'unselected-category'}`"
+              :class="`tab-list-category text-center ma-0 ${selectedCategory === 'all' ? '' : 'unselected-category'}`"
               v-text="'All'"
             />
           </v-col>
           <v-col
-            :class="`${selectedCategory === 'paid' ? 'active-tab-catagory-wrapper' : ''} pb-1`"
-            cols="auto"
+            :class="`tab-catagory-wrapper ${selectedCategory === 'paid' ? 'tab-catagory-wrapper-active' : ''} pb-1`"
+            cols="3"
             @click="changeCategory('Paid')"
           >
             <c-text
               font-size="14"
               :color="selectedCategory === 'paid' ? 'black' : 'primary'"
-              :class="`tab-list-category ma-0 ${selectedCategory === 'paid' ? '' : 'unselected-category'}`"
+              :class="`tab-list-category text-center ma-0 ${selectedCategory === 'paid' ? '' : 'unselected-category'}`"
               v-text="'Paid'"
             />
           </v-col>
           <v-col
-            :class="`${selectedCategory === 'unpaid' ? 'active-tab-catagory-wrapper' : ''} pb-1`"
-            cols="auto"
+            :class="`tab-catagory-wrapper ${selectedCategory === 'unpaid' ? 'tab-catagory-wrapper-active' : ''} pb-1`"
+            cols="3"
             @click="changeCategory('Unpaid')"
           >
             <c-text
               font-size="14"
               :color="selectedCategory === 'unpaid' ? 'black' : 'primary'"
-              :class="`tab-list-category ma-0 ${selectedCategory === 'unpaid' ? '' : 'unselected-category'}`"
+              :class="`tab-list-category text-center ma-0 ${selectedCategory === 'unpaid' ? '' : 'unselected-category'}`"
               v-text="'Unpaid'"
             />
           </v-col>
@@ -56,10 +56,13 @@
       <!-- END SEARCH FIELD -->
 
       <!-- BEGIN INVOICE LIST -->
-      <v-container v-if="invoices.length > 0">
+      <v-container
+        v-if="invoices.length > 0"
+        class="pb-0"
+      >
         <v-card
-          v-for="(item, index) in invoices"
-          v-show="filterByCategory(item.statusInvoice)"
+          v-for="index in (currentPageItems - 1)"
+          v-show="filterByCategory(invoices[index].statusInvoice)"
           :key="index"
           class="mb-3"
           outlined
@@ -70,8 +73,8 @@
                 <v-img
                   max-width="55"
                   max-height="55"
-                  :src="item.image"
-                  :lazy-src="item.image"
+                  :src="invoices[index].image"
+                  :lazy-src="invoices[index].image"
                 />
                 <v-container class="py-0">
                   <c-text
@@ -79,19 +82,19 @@
                     font-weight="bold"
                     color="primary"
                     class="ma-0"
-                    v-text="item.name"
+                    v-text="invoices[index].name"
                   />
                   <c-text
                     font-size="12"
                     color="neutral700"
                     class="ma-0"
-                    v-text="item.date"
+                    v-text="invoices[index].date"
                   />
                   <c-text
                     font-size="12"
                     color="primary"
                     class="ma-0"
-                    v-text="format.currency(item.amount)"
+                    v-text="format.currency(invoices[index].amount)"
                   />
                 </v-container>
               </v-col>
@@ -102,13 +105,24 @@
                 <v-chip
                   class="text--black status-invoice-chip"
                   small
-                  :color="item.statusInvoice === 0 ? 'grey' : 'primary200'"
-                  v-text="item.statusInvoice === 0 ? 'Unpaid' : 'Paid'"
+                  :color="invoices[index].statusInvoice === 0 ? 'grey' : 'primary200'"
+                  v-text="invoices[index].statusInvoice === 0 ? 'Unpaid' : 'Paid'"
                 />
               </v-col>
             </v-row>
           </v-container>
         </v-card>
+        <v-btn
+          v-show="currentPageItems < invoices.length"
+          width="100%"
+          color="primary"
+          class="mt-3"
+          outlined
+          @click="addMore"
+        >
+          Lihat Lebih Banyak
+          <v-icon>mdi-chevron-double-down</v-icon>
+        </v-btn>
       </v-container>
       <v-container v-else>
         <v-img
@@ -130,6 +144,7 @@
     <v-btn
       color="primary"
       class="floating-add-btn"
+      to="/invoices/create"
       dark
       small
       bottom
@@ -154,16 +169,8 @@ export default {
     return {
       searchKeyword: '',
       selectedCategory: 'all',
-      page: 1,
-      pageCount: 0,
-      totalVisiblePagination: 5,
-      itemsPerPage: 10,
-      itemsPerPageSelect: [
-        { text: '5', value: 5 },
-        { text: '10', value: 10 },
-        { text: '25', value: 25 },
-        { text: '50', value: 50 }
-      ],
+      currentPageItems: 0,
+      itemsPerPage: 5,
       selectedRow: [],
       headers: [
         {
@@ -225,9 +232,9 @@ export default {
     },
 
     setDummy () {
-      for (let i = 0; i < 60; i++) {
+      for (let index = 0; index < 20; index++) {
         this.invoices.push({
-          id: i >= 10 ? `451049${i}` : (i >= 100 ? `45104${i}` : `4510490${i}`),
+          id: index >= 10 ? `451049${index}` : (index >= 100 ? `45104${index}` : `4510490${index}`),
           image: `/images/profile/dashboard/top-clients/mobile/client-${this.randomInt(1, 3)}.png`,
           name: this.randomInt(1, 2) === 2 ? 'Fauzan Fadly' : 'Valerian Fabian',
           date: 'Mei 30, 2022',
@@ -238,6 +245,9 @@ export default {
           statusPayment: this.randomInt(0, 3),
           action: 'mdi-delete'
         })
+        if (this.currentPageItems <= this.itemsPerPage) {
+          this.currentPageItems++
+        }
       }
     },
 
@@ -251,6 +261,17 @@ export default {
       } else {
         return true
       }
+    },
+
+    addMore () {
+      const maxItem = (this.itemsPerPage + this.currentPageItems) - 1
+      const currentCount = this.currentPageItems - 1
+      this.invoices.map((element, index) => {
+        if (index > currentCount && index <= maxItem) {
+          this.currentPageItems++
+        }
+        return null
+      })
     },
 
     search () {},
@@ -348,12 +369,16 @@ export default {
     cursor: pointer;
   }
 
-  .active-tab-catagory-wrapper {
-    border-bottom: 2px solid var(--v-primary-base);
-    transition: 0.2s all;
+  .tab-catagory-wrapper {
+    padding-bottom: 6px;
   }
 
-  .active-tab-catagory-wrapper .tab-list-category {
+  .tab-catagory-wrapper-active {
+    border-bottom: 2px solid var(--v-primary-base);
+    padding-bottom: 4px;
+  }
+
+  .tab-catagory-wrapper-active .tab-list-category {
     cursor: default !important;
   }
 

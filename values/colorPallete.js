@@ -9,6 +9,18 @@ const colorPallete = {
     light: colors.shades.black,
     dark: colors.shades.black
   },
+  red: {
+    light: colors.red,
+    dark: colors.red
+  },
+  green: {
+    light: colors.green,
+    dark: colors.green
+  },
+  orange: {
+    light: colors.green,
+    dark: colors.green
+  },
   grey: {
     light: '#E3E3E3',
     dark: '#E3E3E3'

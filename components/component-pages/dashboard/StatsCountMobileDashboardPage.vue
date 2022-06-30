@@ -80,6 +80,7 @@
                   depressed
                   large
                   tile
+                  to="/invoices/create"
                   v-text="'Start Now'"
                 />
               </v-col>
