@@ -120,6 +120,7 @@
                 <v-btn
                   color="primary"
                   class="white--text"
+                  @click="() => $router.push('/register')"
                   v-text="'Daftar'"
                 />
               </v-col>

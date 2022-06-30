@@ -56,7 +56,17 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    'nuxt-purgecss'
+    'nuxt-purgecss',
+    ['v-currency-field/nuxt-treeshaking', {
+      locale: 'id-ID',
+      decimalLength: 0,
+      autoDecimalMode: false,
+      min: null,
+      max: null,
+      defaultValue: 0,
+      valueAsInteger: true,
+      allowNegative: true
+    }]
   ],
 
   moment: {

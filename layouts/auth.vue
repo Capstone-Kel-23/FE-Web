@@ -27,17 +27,44 @@
     <v-main
       :style="{ backgroundColor: mobile ? 'var(--v-neutral400-base)' : '' }"
     >
-      <Nuxt />
+      <v-container
+        fluid
+        class="fill-height"
+      >
+        <v-row justify="center">
+          <v-container v-if="!mobile">
+            <v-row justify="center">
+              <v-col
+                cols="auto"
+                align-self="center"
+              >
+                <v-img
+                  src="/images/logo/logo.png"
+                  max-width="60"
+                  class="mx-auto cursor-pointer"
+                  @click="() => $router.push('/')"
+                />
+              </v-col>
+              <v-col
+                cols="auto"
+                align-self="center"
+              >
+                <div @click="() => $router.push('/')">
+                  <c-text
+                    font-size="40"
+                    font-weight="bold"
+                    color="primary400"
+                    class="ma-0 cursor-pointer"
+                    v-text="'TAGIHIN'"
+                  />
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+          <Nuxt class="pt-0" />
+        </v-row>
+      </v-container>
     </v-main>
-    <v-footer
-      v-if="mobile && routePath === '/forgot'"
-    >
-      <v-btn
-        width="100%"
-        color="primary"
-        v-text="'Reset Password'"
-      />
-    </v-footer>
   </default-layout>
 </template>
 
@@ -66,6 +93,8 @@ export default {
         header = 'Masuk'
       } else if (this.routePath === '/forgot') {
         header = 'Lupa Password'
+      } else if (this.routePath === '/register') {
+        header = 'Daftar'
       }
       return header
     }
@@ -83,5 +112,9 @@ export default {
   .bg-container {
     background-color: var(--v-primary100-base);
     transition: linear 0.2s;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
   }
 </style>
