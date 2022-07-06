@@ -70,7 +70,7 @@ export default {
   ],
 
   moment: {
-    // locales: ['id']
+    locales: ['id']
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

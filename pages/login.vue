@@ -23,6 +23,7 @@
             lazy-validation
           >
             <v-text-field
+              ref="emailInput"
               v-model="email"
               :rules="emailRules"
               placeholder="Masukkan Email"
@@ -32,8 +33,10 @@
               background-color="white"
               style="font-size: 14px"
               prepend-inner-icon="mdi-email"
+              @keyup.enter="valid ? submit() : $refs.passwordInput.focus()"
             />
             <v-text-field
+              ref="passwordInput"
               v-model="password"
               :rules="passwordRules"
               placeholder="Masukkan Password"
@@ -45,6 +48,7 @@
               style="font-size: 14px"
               prepend-inner-icon="mdi-lock"
               :append-icon="viewPassword ? 'mdi-eye-off' : 'mdi-eye'"
+              @keyup.enter="valid ? submit() : $refs.emailInput.focus()"
               @click:append="viewPassword = !viewPassword"
             />
             <v-container class="mb-10">
@@ -60,16 +64,17 @@
               width="100%"
               color="primary"
               :disabled="email != '' && password != '' ? false : true"
+              @click="submit"
               v-text="headerTitle"
             />
-            <v-btn
+            <!-- <v-btn
               width="100%"
               class="mt-3"
               dark
               color="green"
               @click="() => $router.push('/dashboard')"
               v-text="'Guest'"
-            />
+            /> -->
           </v-form>
         </v-col>
       </v-row>
@@ -142,6 +147,8 @@ export default {
         result = await this.$store.dispatch('user/login', {
           email: this.email,
           password: this.password
+        }).catch((err) => {
+          return err.response
         }).finally(() => {
           this.$nuxt.$emit('open-loading', false)
         })
@@ -155,7 +162,7 @@ export default {
         message: result.data.message,
         status: result.status
       })
-      return result.status >= 200 && result.status < 300 ? this.$router.push('/user/dashboard') : null
+      return (result.status >= 200 && result.status < 300) ? this.$router.push('/dashboard') : null
     }
   }
 }
