@@ -11,25 +11,23 @@
             <c-text
               v-if="!mobile"
               font-size="32"
-              v-text="'Clients'"
+              v-text="'Reports'"
             />
             <v-col v-else>
               <c-text
                 font-size="20"
                 font-weight="bold"
                 class="text-center ma-0"
-                v-text="'Clients'"
+                v-text="'Reports'"
               />
             </v-col>
             <!-- END HEADER TITLE -->
           </v-row>
           <v-row>
-            <DataTableClientsPage
+            <!-- <DataTableClientsPage
               v-if="!mobile"
-            />
-            <DataTableMobileClientsPage
-              v-else
-            />
+            /> -->
+            <TableMobileReportsPage />
           </v-row>
         </v-container>
       </v-col>
@@ -38,15 +36,13 @@
 </template>
 
 <script>
-import DataTableClientsPage from '@/components/component-pages/clients/DataTableClientsPage.vue'
-import DataTableMobileClientsPage from '@/components/component-pages/clients/DataTableMobileClientsPage.vue'
+import TableMobileReportsPage from '@/components/component-pages/reports/TableMobileReportsPage.vue'
 
 export default {
-  name: 'ClientsPage',
+  name: 'ReportsMobilePage',
 
   components: {
-    DataTableClientsPage,
-    DataTableMobileClientsPage
+    TableMobileReportsPage
   },
 
   layout: 'dashboard',
@@ -60,18 +56,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .search-field-wrapper {
-    font-size: 14px;
-  }
-
-  .search-field-wrapper >>> .v-text-field__slot input,
-  .search-field-wrapper >>> .v-input__icon--append i {
-    color: var(--v-primary-base)
-  }
-
-  .search-field-wrapper >>> .v-text-field__slot input::placeholder {
-    color: var(--v-primary400-base)
-  }
-</style>

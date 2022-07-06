@@ -118,6 +118,8 @@ export default {
 
   layout: 'dashboard',
 
+  middleware: ['auth'],
+
   data () {
     return {
       valid: false,

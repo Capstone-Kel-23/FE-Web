@@ -53,8 +53,6 @@ const actions = {
       store.commit('setRole', result.data.role)
       store.commit('setToken', result.data.token)
       return response
-    }).catch((err) => {
-      return err.response
     })
   },
 

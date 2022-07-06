@@ -108,7 +108,15 @@
         <v-col cols="auto" align-self="center">
           <v-container>
             <v-row>
-              <v-col>
+              <v-col v-if="userToken !== null">
+                <v-btn
+                  color="white"
+                  class="primary--text"
+                  @click="() => $router.push('/dashboard')"
+                  v-text="'Dashboard'"
+                />
+              </v-col>
+              <v-col v-if="userToken === null">
                 <v-btn
                   color="white"
                   class="primary--text"
@@ -116,7 +124,7 @@
                   v-text="'Masuk'"
                 />
               </v-col>
-              <v-col>
+              <v-col v-if="userToken === null">
                 <v-btn
                   color="primary"
                   class="white--text"
@@ -182,6 +190,10 @@ export default {
         md: this.$vuetify.breakpoint.md,
         lg: this.$vuetify.breakpoint.lg
       }
+    },
+
+    userToken () {
+      return this.$store.state.user.token
     }
   },
 
