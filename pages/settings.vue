@@ -36,6 +36,8 @@ export default {
 
   layout: 'dashboard',
 
+  middleware: ['auth'],
+
   computed: {
     mobile () {
       return this.$vuetify.breakpoint.mobile

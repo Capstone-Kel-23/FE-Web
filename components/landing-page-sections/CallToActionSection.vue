@@ -21,6 +21,7 @@
           v-text="'Tidak ada lagi invoice yang terlewat untuk ditagih. Setiap status terupdate secara real-time'"
         />
         <v-btn
+          v-if="userToken === null"
           color="primary"
           x-large
           @click="() => $router.push('/register')"
@@ -48,6 +49,12 @@
 
 <script>
 export default {
-  name: 'CallToActionSection'
+  name: 'CallToActionSection',
+
+  computed: {
+    userToken () {
+      return this.$store.state.user.token
+    }
+  }
 }
 </script>

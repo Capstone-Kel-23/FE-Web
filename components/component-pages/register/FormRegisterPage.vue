@@ -134,6 +134,7 @@
       </v-row>
     </v-container>
     <v-btn
+      v-if="mobile"
       width="100%"
       color="primary"
       class="mt-10"
@@ -141,10 +142,22 @@
       @click="submit"
       v-text="'DAFTAR'"
     />
+    <v-btn
+      v-else
+      width="100%"
+      color="primary"
+      class="mt-10"
+      :disabled="!valid"
+      @click="submit"
+      v-text="'DAFTAR'"
+    />
   </v-form>
 </template>
 
 <script>
+import * as Api from '@/values/api'
+import * as Request from '@/utils/request'
+
 export default {
   name: 'FormRegisterPage',
 
@@ -187,10 +200,6 @@ export default {
       this.viewPassword = !(this.viewPassword)
     },
 
-    lengthPassword () {
-
-    },
-
     matchPassword (value) {
       if (value !== this.password) {
         return 'Konfirmasi Password tidak sesuai!'
@@ -202,16 +211,29 @@ export default {
       let result = null
       if (this.$refs.form.validate()) {
         await this.$nuxt.$emit('open-loading', true)
-        result = {
-          status: 201,
-          data: { message: 'Pendaftaran berhasil!' }
-        }
-        // result = await this.$store.dispatch('user/login', {
-        //   email: this.email,
-        //   password: this.password
-        // }).finally(() => {
-        //   this.$nuxt.$emit('open-loading', false)
-        // })
+        await Request.post({
+          url: Api.registerUser,
+          data: {
+            email: this.email,
+            fullname: this.name,
+            password: this.password,
+            username: (this.email.split('@'))[0]
+          }
+        })
+          .then(async (response) => {
+            result = response
+            await this.$nuxt.$emit('open-message-dialog', {
+              message: 'Selamat! akun anda berhasil terdaftar',
+              icon: 'mdi-check-circle-outline',
+              iconColor: 'green',
+              actionButtons: [
+                { color: 'primary', text: 'Masuk', action: () => { this.$router.push('/login') } },
+                { color: 'neutral800', text: 'Tetap' }
+              ]
+            })
+          })
+          .catch((err) => { result = err.response })
+          .finally(() => this.$nuxt.$emit('open-loading', false))
       } else {
         result = {
           status: 400,
@@ -219,10 +241,9 @@ export default {
         }
       }
       await this.$nuxt.$emit('open-snackbar', {
-        message: result.data.message,
+        message: result.data.message !== null ? result.data.message : 'Maaf terjadi kesalahan',
         status: result.status
       })
-      return result.status >= 200 && result.status < 300 ? this.$router.push('/user/dashboard') : null
     }
   }
 }

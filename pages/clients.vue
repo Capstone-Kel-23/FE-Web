@@ -13,6 +13,14 @@
               font-size="32"
               v-text="'Clients'"
             />
+            <v-col v-else>
+              <c-text
+                font-size="20"
+                font-weight="bold"
+                class="text-center ma-0"
+                v-text="'Clients'"
+              />
+            </v-col>
             <!-- END HEADER TITLE -->
           </v-row>
           <v-row>
@@ -42,6 +50,8 @@ export default {
   },
 
   layout: 'dashboard',
+
+  middleware: ['auth'],
 
   computed: {
     mobile () {

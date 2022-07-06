@@ -12,7 +12,7 @@
     >
       <SidebarMenusDashboardLayout
         :menus="menus"
-        @logout="logout"
+        @logout="logoutDialog"
       />
     </v-navigation-drawer>
     <v-navigation-drawer
@@ -27,7 +27,7 @@
     >
       <SidebarMenusDashboardLayout
         :menus="menus"
-        @logout="logout"
+        @logout="logoutDialog"
       />
     </v-navigation-drawer>
     <v-app-bar
@@ -111,7 +111,7 @@
                           <c-text
                             class="ma-0"
                             font-weight="bold"
-                            v-text="user.fullname"
+                            v-text="user.name"
                           />
                           <c-text
                             class="ma-0"
@@ -194,10 +194,11 @@ export default {
 
   computed: {
     user () {
-      return {
-        fullname: 'Fabian Valerian',
-        position: 'Sales Manager'
-      }
+      // return {
+      //   fullname: 'Fabian Valerian',
+      //   position: 'Sales Manager'
+      // }
+      return this.$store.state.user
     },
 
     menus () {
@@ -222,7 +223,30 @@ export default {
   },
 
   methods: {
-    logout () {}
+    logoutDialog () {
+      this.$nuxt.$emit('open-message-dialog', {
+        message: 'Log-out Account',
+        description: 'Apakah anda yakin ingin keluar dari akun anda?',
+        icon: 'mdi-help-circle-outline',
+        iconColor: 'primary',
+        actionButtons: [
+          { color: 'primary', text: 'Ya', action: () => { this.logoutAction() } },
+          { color: 'red', text: 'Batal' }
+        ]
+      })
+    },
+
+    logoutAction () {
+      this.$store.dispatch('user/logout')
+        .finally(async () => {
+          const status = 200
+          await this.$nuxt.$emit('open-snackbar', {
+            message: 'Terima kasih, sampai jumpa!',
+            status: parseInt(status)
+          })
+          return await this.$router.push('/login')
+        })
+    }
   }
 }
 </script>
