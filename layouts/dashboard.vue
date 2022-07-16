@@ -15,21 +15,6 @@
         @logout="logoutDialog"
       />
     </v-navigation-drawer>
-    <v-navigation-drawer
-      v-else
-      v-model="webDrawer"
-      :mini-variant="miniVariant"
-      :clipped="clipped"
-      color="primary900"
-      fixed
-      dark
-      app
-    >
-      <SidebarMenusDashboardLayout
-        :menus="menus"
-        @logout="logoutDialog"
-      />
-    </v-navigation-drawer>
     <v-app-bar
       :clipped-left="clipped"
       :color="mobile ? 'primary' : 'white'"

@@ -6,7 +6,37 @@
     <v-row>
       <v-col>
         <!-- BEGIN HEADER TITLE -->
+        <v-container
+          v-if="mobile"
+          class="px-0"
+        >
+          <v-row>
+            <v-col
+              cols="auto"
+              align-self="center"
+            >
+              <v-btn
+                icon
+                @click="() => $router.go(-1)"
+              >
+                <v-icon
+                  size="40"
+                  color="black"
+                  v-text="'mdi-chevron-left'"
+                />
+              </v-btn>
+            </v-col>
+            <v-col align-self="center">
+              <c-text
+                font-size="32"
+                class="ma-0"
+                v-text="'New Invoices'"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
         <c-text
+          v-else
           font-size="32"
           v-text="'New Invoices'"
         />
@@ -33,6 +63,8 @@
             :last-name="dataForm.lastName"
             :email="dataForm.email"
             :phone="dataForm.phone"
+            :address="dataForm.address"
+            :postal-code="dataForm.postalCode"
             :location="location"
             :selected-location="selectedLocation"
             @input-first-name="value => dataForm.firstName = value"
@@ -43,6 +75,8 @@
             @input-regency="value => setLocation(value, 'regency')"
             @input-district="value => setLocation(value, 'district')"
             @input-village="value => setLocation(value, 'village')"
+            @input-address="value => dataForm.address = value"
+            @input-postal-code="value => dataForm.postalCode = value"
           />
           <BillingFormInvoicesCreatePage
             :invoice-date-selected="dataForm.invoiceDateSelected"
@@ -67,6 +101,10 @@
           />
           <ItemsFormInvoicesCreatePage
             :invoice-items="dataForm.invoiceItems"
+            :sub-total="dataForm.subTotal"
+            :total="dataForm.total"
+            :discount="dataForm.discount"
+            :tax="dataForm.tax"
             @input-invoice-item="value => inputInvoiceItems(value, 'item')"
             @input-invoice-description="value => inputInvoiceItems(value, 'description')"
             @input-invoice-quantity="value => inputInvoiceItems(value, 'quantity')"
@@ -74,6 +112,8 @@
             @input-invoice-amount="value => inputInvoiceItems(value, 'amount')"
             @add-invoice-item="addInvoiceItem"
             @remove-invoice-item="removeInvoiceItem"
+            @input-discount="(value) => {dataForm.discount = value ; setTotal()}"
+            @input-tax="(value) => {dataForm.tax = value ; setTotal()}"
           />
           <v-btn
             class="mt-15"
@@ -105,6 +145,8 @@ import provinces from '@/values/locations/provinces.json'
 import regencies from '@/values/locations/regencies.json'
 import districts from '@/values/locations/districts.json'
 import villages from '@/values/locations/villages.json'
+import * as Api from '@/values/api'
+import * as Request from '@/utils/request'
 
 export default {
   name: 'InvoicesCreatePage',
@@ -133,6 +175,8 @@ export default {
         lastName: '',
         email: '',
         phone: '',
+        address: '',
+        postalCode: '',
         profilePicFile: null,
         invoiceDateSelected: '',
         invoiceDatePicker: '',
@@ -140,8 +184,12 @@ export default {
         dueDatePicker: '',
         invoiceId: '',
         paymentType: 'cash',
+        subTotal: 0,
+        total: 0,
+        discount: 0,
+        tax: 0,
         invoiceItems: [
-          { item: '', description: '', quantity: 0, price: 0, amount: 0 }
+          { item: '', description: '', quantity: 1, price: 0, amount: 0 }
         ]
       },
       selectedLocation: {
@@ -187,32 +235,35 @@ export default {
     },
 
     inputInvoiceItems (data, field) {
-      if (field === 'price' || field === 'quantity') {
-        if (field === 'quantity' && data.value < 1) {
-          this.dataForm.invoiceItems[data.index].quantity = 1
-        } else if (data.value === null) {
-          this.dataForm.invoiceItems[data.index].quantity = 1
-        }
-        this.dataForm.invoiceItems[data.index].amount = this.dataForm.invoiceItems[data.index].price * this.dataForm.invoiceItems[data.index].quantity
-      } else {
-        this.dataForm.invoiceItems[data.index][field] = data.value
-      }
+      this.dataForm.invoiceItems[data.index][field] = data.value
+      this.dataForm.invoiceItems[data.index].amount = this.dataForm.invoiceItems[data.index].price * this.dataForm.invoiceItems[data.index].quantity
+      this.setTotal()
+    },
+
+    setTotal () {
+      this.dataForm.subTotal = 0
+      this.dataForm.invoiceItems.map((el) => {
+        this.dataForm.subTotal += el.amount
+        return null
+      })
+      this.dataForm.total = this.dataForm.subTotal - this.dataForm.discount + this.dataForm.tax
     },
 
     addInvoiceItem () {
       return this.dataForm.invoiceItems.push({
         item: '',
         description: '',
-        quantity: 0,
+        quantity: 1,
         price: 0,
         amount: 0
       })
     },
 
     removeInvoiceItem (index) {
-      return this.dataForm.invoiceItems.length > 1
-        ? this.dataForm.invoiceItems.splice(index, 1)
-        : null
+      if (this.dataForm.invoiceItems.length > 1) {
+        this.dataForm.invoiceItems.splice(index, 1)
+        this.setTotal()
+      }
     },
 
     updateInvoiceDatePicker (value) {
@@ -290,7 +341,89 @@ export default {
       }
     },
 
-    submit () {
+    async generateBodyForm () {
+      const itemsForm = []
+      await this.dataForm.invoiceItems.map((el) => {
+        return itemsForm.push({
+          description: el.description,
+          name: el.item,
+          price: parseInt(el.price),
+          quantity: parseInt(el.quantity)
+        })
+      })
+      return {
+        additional_costs: [
+          {
+            name: 'pajak',
+            total: this.dataForm.tax,
+            type: 'tax'
+          },
+          {
+            name: 'discount',
+            total: this.dataForm.discount,
+            type: 'disc'
+          }
+        ],
+        client: {
+          address: this.dataForm.address,
+          city: this.getLocation('regency'),
+          country: 'IND',
+          email: this.dataForm.email,
+          first_name: this.dataForm.firstName,
+          last_name: this.dataForm.lastName,
+          phone_number: this.dataForm.phone,
+          postal_code: this.dataForm.postalCode,
+          state: this.getLocation('province')
+        },
+        date: this.$moment(this.dataForm.invoiceDateSelected, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        date_due: this.$moment(this.dataForm.dueDateSelected, 'DD/MM/YYYY').format('YYYY-MM-DD'),
+        description: '',
+        invoice_number: this.dataForm.invoiceId,
+        items: itemsForm,
+        logo_url: '',
+        sub_total: this.dataForm.subTotal,
+        total: this.dataForm.total,
+        type_payment: this.dataForm.paymentType
+      }
+    },
+
+    getLocation (type) {
+      let locationName = ''
+      if (type === 'province') {
+        provinces.map((el) => {
+          if (el.id === this.selectedLocation.province) {
+            locationName = el.name
+          }
+          return null
+        })
+      } else if (type === 'regency') {
+        regencies.map((el) => {
+          if (el.id === this.selectedLocation.regency) {
+            locationName = el.name
+          }
+          return null
+        })
+      } else if (type === 'district') {
+        districts.map((el) => {
+          if (el.id === this.selectedLocation.district) {
+            locationName = el.name
+          }
+          return null
+        })
+      } else if (type === 'village') {
+        villages.map((el) => {
+          if (el.id === this.selectedLocation.village) {
+            locationName = el.name
+          }
+          return null
+        })
+      }
+
+      return locationName
+    },
+
+    async submit () {
+      let result = null
       this.validLogoFile = this.dataForm.logoFile !== null
       this.validProfilePicFile = this.dataForm.profilePicFile !== null
       if (
@@ -298,7 +431,27 @@ export default {
         this.validLogoFile &&
         this.validProfilePicFile
       ) {
-        return null
+        await this.$nuxt.$emit('open-loading', true)
+        await Request.post({
+          url: Api.createInvoice,
+          token: this.$store.state.user.token,
+          data: await this.generateBodyForm()
+        })
+          .then((response) => { result = response })
+          .catch((err) => { result = err.response })
+          .finally(() => this.$nuxt.$emit('open-loading', false))
+      } else {
+        result = {
+          status: 400,
+          data: { message: 'Form tidak valid, silakan cek kembali!' }
+        }
+      }
+      await this.$nuxt.$emit('open-snackbar', {
+        message: result.data.message !== null ? result.data.message : 'Maaf terjadi kesalahan',
+        status: result.status
+      })
+      if (result.status >= 200 && result.status < 300) {
+        this.$router.go(-1)
       }
     }
   }

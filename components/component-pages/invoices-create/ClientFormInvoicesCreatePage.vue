@@ -20,9 +20,8 @@
     <v-container>
       <v-row justify="space-between">
         <v-col
-          sm="12"
-          md="5"
-          lg="5"
+          :cols="mobile ? '12' : '5'"
+          class="py-0"
         >
           <c-text
             font-size="18"
@@ -54,9 +53,8 @@
           />
         </v-col>
         <v-col
-          sm="12"
-          md="5"
-          lg="5"
+          :cols="mobile ? '12' : '5'"
+          class="py-0"
         >
           <c-text
             font-size="18"
@@ -99,9 +97,8 @@
     <v-container>
       <v-row justify="space-between">
         <v-col
-          sm="12"
-          md="5"
-          lg="5"
+          :cols="mobile ? '12' : '5'"
+          class="py-0"
         >
           <c-text
             font-size="18"
@@ -139,9 +136,8 @@
           />
         </v-col>
         <v-col
-          sm="12"
-          md="5"
-          lg="5"
+          :cols="mobile ? '12' : '5'"
+          class="py-0"
         >
           <c-text
             font-size="18"
@@ -163,7 +159,7 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Village *'"
+            v-text="'Sub Disctrict / Village *'"
           />
           <v-autocomplete
             :items="location.villages"
@@ -174,7 +170,7 @@
             dense
             background-color="white"
             outlined
-            placeholder="Enter Villages"
+            placeholder="Enter Sub Disctrict / Village"
             @input="inputValue('input-village', $event)"
           />
         </v-col>
@@ -280,6 +276,12 @@ export default {
         ...this.requiredRules('Email'),
         v => /.+@.+/.test(v) || 'Email tidak valid'
       ]
+    }
+  },
+
+  computed: {
+    mobile () {
+      return this.$vuetify.breakpoint.mobile
     }
   },
 

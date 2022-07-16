@@ -1,107 +1,210 @@
 <template>
   <v-container>
-    <v-simple-table
+    <v-data-table
+      hide-default-footer
+      disable-filtering
+      disable-pagination
+      disable-sort
       class="form-repeater-wrapper"
+      :mobile-breakpoint="1264"
+      :headers="headers"
+      :items="invoiceItems"
     >
-      <template #default>
-        <thead>
-          <tr>
-            <th
-              v-for="(header, index) in headers"
-              :key="index"
-            >
+      <template #[`item.item`]="{ item, index }">
+        <v-text-field
+          :value="item.item"
+          :rules="requiredRules('Item')"
+          dense
+          :class="`${mobile ? 'item-form-mobile' : ''}`"
+          background-color="white"
+          :outlined="!mobile"
+          placeholder="Enter Item Name"
+          @input="inputValueItems('input-invoice-item', index, $event)"
+        />
+      </template>
+      <template #[`item.description`]="{ item, index }">
+        <v-textarea
+          :value="item.description"
+          :rules="requiredRules('Description')"
+          rows="1"
+          dense
+          :class="`${mobile ? 'item-form-mobile' : ''}`"
+          background-color="white"
+          :outlined="!mobile"
+          placeholder="Enter Description"
+          @input="inputValueItems('input-invoice-description', index, $event)"
+        />
+      </template>
+      <template #[`item.quantity`]="{ item, index }">
+        <div :class="`${mobile ? '' : 'item-form-quantity'}`">
+          <v-text-field
+            :value="item.quantity"
+            :rules="quantityItemRules"
+            type="number"
+            dense
+            :class="`${mobile ? 'item-form-mobile' : ''}`"
+            background-color="white"
+            :outlined="!mobile"
+            placeholder="Enter Quantity"
+            @input="inputValueItems('input-invoice-quantity', index, $event)"
+          />
+        </div>
+      </template>
+      <template #[`item.price`]="{ item, index }">
+        <v-currency-field
+          :value="item.price"
+          :rules="requiredRules('Price')"
+          prefix="Rp"
+          dense
+          :class="`${mobile ? 'item-form-mobile' : ''}`"
+          background-color="white"
+          :outlined="!mobile"
+          placeholder="Enter Price"
+          @input="inputValueItems('input-invoice-price', index, $event)"
+        />
+      </template>
+      <template #[`item.amount`]="{ item }">
+        <c-text
+          :font-size="mobile ? '14' : '16'"
+          :class="mobile ? 'ma-0' : ''"
+          v-text="format.currency(item.amount)"
+        />
+      </template>
+      <template #[`item.remove`]="{ item, index }">
+        <v-btn
+          icon
+          color="red"
+          :disabled="invoiceItems.length <= 1"
+          @click="removeItem(index, item)"
+        >
+          <v-icon>mdi-delete</v-icon>
+        </v-btn>
+      </template>
+    </v-data-table>
+    <div class="add-item-wrapper">
+      <v-btn
+        width="100%"
+        text
+        large
+        @click="addItem"
+      >
+        <v-icon>mdi-plus</v-icon>
+        Add an item
+      </v-btn>
+    </div>
+    <v-row
+      justify="end"
+      :class="`mt-${mobile ? '10' : '5'} ${mobile ? 'total-form-mobile-wrapper' : ''}`"
+    >
+      <v-col
+        sm="12"
+        md="6"
+        lg="6"
+      >
+        <v-container class="py-0">
+          <v-row justify="space-between">
+            <v-col cols="6">
               <c-text
-                class="ma-0"
-                v-text="header"
+                class="ma-0 text-right"
+                v-text="'Sub Total'"
               />
-            </th>
-            <th class="col-auto pa-0" />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(item, index) in invoiceItems"
-            :key="index"
-          >
-            <td>
-              <v-text-field
-                :value="item.item"
-                :rules="requiredRules('Item')"
-                dense
-                background-color="white"
-                outlined
-                placeholder="Enter Item Name"
-                @input="inputValue('input-invoice-item', index, $event)"
+            </v-col>
+            <v-col cols="6">
+              <c-text
+                class="ma-0 text-right"
+                v-text="format.currency(subTotal)"
               />
-            </td>
-            <td>
-              <v-textarea
-                :value="item.description"
-                :rules="requiredRules('Description')"
-                rows="1"
-                dense
-                background-color="white"
-                outlined
-                placeholder="Enter Description"
-                @input="inputValue('input-invoice-description', index, $event)"
-              />
-            </td>
-            <td class="col-1">
-              <v-text-field
-                :value="item.quantity"
-                :rules="requiredRules('Quantity')"
-                type="number"
-                dense
-                background-color="white"
-                outlined
-                placeholder="Enter Quantity"
-                @input="inputValue('input-invoice-quantity', index, $event)"
-              />
-            </td>
-            <td class="col-2">
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container class="py-0">
+          <v-row justify="space-between">
+            <v-col cols="6">
+              <div
+                class="d-flex cursor-pointer fit-width ms-auto"
+                @click="showForm('discount')"
+              >
+                <c-text
+                  class="ma-0 me-1 text-right"
+                  v-text="'Add Discount'"
+                />
+                <v-icon
+                  v-text="showDiscountForm ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                />
+              </div>
               <v-currency-field
-                :value="item.price"
-                :rules="requiredRules('Price')"
+                v-show="showDiscountForm"
+                :value="discount"
+                hide-details=""
                 prefix="Rp"
                 dense
                 background-color="white"
                 outlined
-                placeholder="Enter Price"
-                @input="inputValue('input-invoice-price', index, $event)"
+                placeholder="Enter Discount"
+                @input="inputValue('input-discount', $event)"
               />
-            </td>
-            <td>
+            </v-col>
+            <v-col cols="6">
               <c-text
-                v-text="format.currency(item.amount)"
+                class="ma-0 text-right"
+                v-text="format.currency(discount)"
               />
-            </td>
-            <td class="pa-0">
-              <v-btn
-                icon
-                color="red"
-                :disabled="invoiceItems.length <= 1"
-                @click="removeItem(index)"
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container class="py-0">
+          <v-row justify="space-between">
+            <v-col cols="6">
+              <div
+                class="d-flex cursor-pointer fit-width ms-auto"
+                @click="showForm('tax')"
               >
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </td>
-          </tr>
-          <tr class="add-item-button-wrapper">
-            <td colspan="6">
-              <v-btn
-                width="100%"
-                text
-                large
-                @click="addItem"
-              >
-                <v-icon>mdi-plus</v-icon>
-                Add an item
-              </v-btn>
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
+                <c-text
+                  class="ma-0 me-1 text-right"
+                  v-text="'Add Tax'"
+                />
+                <v-icon
+                  v-text="showTaxForm ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+                />
+              </div>
+              <v-currency-field
+                v-show="showTaxForm"
+                :value="tax"
+                hide-details=""
+                prefix="Rp"
+                dense
+                background-color="white"
+                outlined
+                placeholder="Enter Tax"
+                @input="inputValue('input-tax', $event)"
+              />
+            </v-col>
+            <v-col cols="6">
+              <c-text
+                class="ma-0 text-right"
+                v-text="format.currency(tax)"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-container class="py-0">
+          <v-row justify="space-between">
+            <v-col cols="6">
+              <c-text
+                class="ma-0 text-right"
+                v-text="'Total'"
+              />
+            </v-col>
+            <v-col cols="6">
+              <c-text
+                class="ma-0 text-right"
+                v-text="format.currency(total)"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -117,6 +220,22 @@ export default {
     invoiceItems: {
       type: null,
       default: [{ item: '', description: '', quantity: 0, price: 0, amount: 0 }]
+    },
+    subTotal: {
+      type: Number,
+      default: 0
+    },
+    total: {
+      type: Number,
+      default: 0
+    },
+    discount: {
+      type: Number,
+      default: 0
+    },
+    tax: {
+      type: Number,
+      default: 0
     }
   },
 
@@ -127,17 +246,26 @@ export default {
     'input-invoice-price',
     'input-invoice-amount',
     'add-invoice-item',
-    'remove-invoice-item'
+    'remove-invoice-item',
+    'input-discount',
+    'input-tax'
   ],
 
   data () {
     return {
+      showDiscountForm: false,
+      showTaxForm: false,
+      quantityItemRules: [
+        ...this.requiredRules('Quantity'),
+        v => v >= 1 || 'Quantity minimal 1'
+      ],
       headers: [
-        'Item',
-        'Description',
-        'Quantity',
-        'Price',
-        'Amount'
+        { text: 'Item', value: 'item' },
+        { text: 'Description', value: 'description' },
+        { text: 'Quantity', value: 'quantity' },
+        { text: 'Price', value: 'price' },
+        { text: 'Amount', value: 'amount' },
+        { text: '', value: 'remove' }
       ]
     }
   },
@@ -145,22 +273,44 @@ export default {
   computed: {
     format () {
       return numberFormat
+    },
+
+    mobile () {
+      return this.$vuetify.breakpoint.mobile
     }
   },
 
   methods: {
-    inputValue (emitName, itemIndex, itemValue = null) {
+    inputValueItems (emitName, itemIndex = 0, itemValue = null) {
       return this.$emit(emitName, {
         index: itemIndex,
         value: itemValue
       })
     },
 
+    inputValue (emitName, value = null) {
+      return this.$emit(emitName, value)
+    },
+
+    showForm (type) {
+      if (type === 'discount') {
+        this.showDiscountForm = !this.showDiscountForm
+        if (!this.showDiscountForm) {
+          this.inputValue('input-discount', 0)
+        }
+      } else {
+        this.showTaxForm = !this.showTaxForm
+        if (!this.showTaxForm) {
+          this.inputValue('input-tax', 0)
+        }
+      }
+    },
+
     addItem () {
       return this.$emit('add-invoice-item')
     },
 
-    removeItem (index) {
+    removeItem (index, avoider = null) {
       return this.$emit('remove-invoice-item', index)
     },
 
@@ -178,12 +328,50 @@ export default {
     background-color: transparent !important;
   }
 
-  .form-repeater-wrapper table tbody tr td {
+  .form-repeater-wrapper >>> table tbody tr td:not(:last-child) {
     padding-top: 10px;
+    font-size: 14px !important;
+    vertical-align: middle;
   }
 
-  .add-item-button-wrapper td {
+  .form-repeater-wrapper >>> .item-form-quantity {
+    max-width: 75px;
+  }
+
+  .form-repeater-wrapper >>> .item-form-mobile .v-input__slot {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .form-repeater-wrapper >>> .item-form-mobile .v-text-field__prefix,
+  .form-repeater-wrapper >>> .item-form-mobile input,
+  .form-repeater-wrapper >>> .item-form-mobile textarea {
+    font-size: 14px !important;
+  }
+
+  .form-repeater-wrapper >>> .v-data-table__mobile-row__header {
+    width: fit-content !important;
+  }
+
+  .form-repeater-wrapper >>> .v-data-table__mobile-row__cell {
+    width: 75% !important;
+  }
+
+  .add-item-wrapper {
+    border-top: 1px solid var(--v-neutral600-base);
     border-bottom: 1px solid var(--v-neutral600-base);
     padding: 0 !important;
+  }
+
+  .total-form-mobile-wrapper >>> p {
+    font-size: 14px !important;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  .fit-width {
+    width: fit-content;
   }
 </style>

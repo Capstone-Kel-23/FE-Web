@@ -3,22 +3,19 @@
     <v-dialog
       v-model="dialog"
       persistent
-      max-width="300"
+      max-width="fit-content"
     >
       <v-card
-        color="blue"
+        color="primary"
         elevation="0"
         class="pa-3"
         dark
       >
-        <v-card-text>
-          Loading...
-          <v-progress-linear
-            indeterminate
-            color="white"
-            class="mt-3"
-          />
-        </v-card-text>
+        <v-progress-circular
+          indeterminate
+          width="7"
+          color="white"
+        />
       </v-card>
     </v-dialog>
   </div>
@@ -30,7 +27,8 @@ export default {
 
   data () {
     return {
-      dialog: false
+      dialog: false,
+      showTooltip: true
     }
   },
 

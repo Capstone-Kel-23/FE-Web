@@ -89,20 +89,6 @@
       </v-container>
       <!-- END CLIENTS LIST -->
     </v-container>
-    <v-btn
-      color="primary"
-      class="floating-add-btn"
-      dark
-      small
-      bottom
-      right
-      fixed
-      fab
-    >
-      <v-icon size="35">
-        mdi-plus
-      </v-icon>
-    </v-btn>
   </v-container>
 </template>
 

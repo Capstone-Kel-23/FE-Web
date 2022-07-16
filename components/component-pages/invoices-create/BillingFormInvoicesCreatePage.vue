@@ -14,9 +14,8 @@
     <v-container>
       <v-row>
         <v-col
-          sm="12"
-          md="4"
-          lg="4"
+          :cols="mobile ? '12' : '4'"
+          class="py-0"
         >
           <c-text
             font-size="18"
@@ -93,15 +92,14 @@
           </v-btn>
         </v-col>
         <v-col
-          sm="12"
-          md="4"
-          lg="4"
+          :cols="mobile ? '12' : '4'"
+          class="pb-0"
         >
           <!-- BEGIN INVOICE DATE PICKER -->
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Invoice Date  *'"
+            v-text="'Invoice Date *'"
           />
           <v-menu
             v-model="invoiceDateMenu"
@@ -178,7 +176,7 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Due Date  *'"
+            v-text="'Due Date *'"
           />
           <v-menu
             v-model="dueDateMenu"
@@ -252,9 +250,8 @@
           <!-- END INVOICE DATE PICKER -->
         </v-col>
         <v-col
-          sm="12"
-          md="4"
-          lg="4"
+          :cols="mobile ? '12' : '4'"
+          :class="mobile ? 'py-0' : ''"
         >
           <!-- BEGIN RIGHT SIDE FORM -->
           <c-text
@@ -362,6 +359,12 @@ export default {
           { text: 'Online', value: 'online' }
         ]
       }
+    }
+  },
+
+  computed: {
+    mobile () {
+      return this.$vuetify.breakpoint.mobile
     }
   },
 

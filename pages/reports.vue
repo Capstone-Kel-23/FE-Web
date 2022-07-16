@@ -1,5 +1,6 @@
 <template>
   <v-container
+    v-if="mobile"
     fluid
     :class="`main-content-bg fill-height align-start ${mobile ? 'pa-5' : 'pa-10'}`"
   >
@@ -52,6 +53,18 @@ export default {
   computed: {
     mobile () {
       return this.$vuetify.breakpoint.mobile
+    }
+  },
+
+  beforeCreate () {
+    if (!this.$vuetify.breakpoint.mobile) {
+      this.$router.go(-1)
+    }
+  },
+
+  updated () {
+    if (!this.$vuetify.breakpoint.mobile) {
+      this.$router.go(-1)
     }
   }
 }

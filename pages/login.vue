@@ -65,7 +65,7 @@
               color="primary"
               :disabled="email != '' && password != '' ? false : true"
               @click="submit"
-              v-text="headerTitle"
+              v-text="'Login'"
             />
             <!-- <v-btn
               width="100%"
@@ -159,7 +159,7 @@ export default {
         }
       }
       await this.$nuxt.$emit('open-snackbar', {
-        message: result.data.message,
+        message: result.data ? result.data.message : '',
         status: result.status
       })
       return (result.status >= 200 && result.status < 300) ? this.$router.push('/dashboard') : null

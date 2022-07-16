@@ -1,5 +1,15 @@
 <template>
   <v-container class="pa-0 mt-3">
+    <v-dialog
+      v-model="detailInvoiceDialog"
+      max-width="600"
+    >
+      <PreviewDetailInvoicePage
+        :invoice="detailInvoice"
+        :is-loading="isLoadingDetailInvoice"
+        @close-dialog="detailInvoiceDialog = !detailInvoiceDialog"
+      />
+    </v-dialog>
     <!-- BEGIN SEARCH FIELD -->
     <v-container class="pa-0">
       <v-row justify="end">
@@ -52,25 +62,27 @@
       :items="invoices"
       :page.sync="page"
       :items-per-page="itemsPerPage"
-      :search="searchKeyword"
+      :search.sync="searchKeyword"
       hide-default-footer
       class="elevation-2 data-table-wrapper"
       show-select
       :custom-filter="filterByCategory"
+      :loading="isLoading"
+      loading-text="Memuat Data..."
       @page-count="pageCount = $event"
     >
-      <template #[`item.id`]="{ item }">
+      <template #[`item.invoiceNumber`]="{ item }">
         <c-text
           font-size="12"
           class="ma-0"
-          v-text="item.id"
+          v-text="item.invoiceNumber === '' || item.invoiceNumber === null ? '-' : item.invoiceNumber"
         />
       </template>
       <template #[`item.date`]="{ item }">
         <c-text
           font-size="12"
           class="ma-0"
-          v-text="item.date"
+          v-text="`${$moment(item.date).format('DD MMM, YYYY')}`"
         />
       </template>
       <template #[`item.to`]="{ item }">
@@ -90,28 +102,17 @@
       <template #[`item.dueDate`]="{ item }">
         <c-text
           font-size="12"
+          :color="$moment(item.dueDate).diff($moment(), 'days') > 0 ? 'orange' : ''"
           class="ma-0"
-          v-text="item.dueDate"
+          v-text="`${$moment(item.dueDate).diff($moment(), 'days') > 0 ? $moment(item.dueDate).endOf().fromNow() : 'Sudah Lewat'}`"
         />
       </template>
       <template #[`item.statusInvoice`]="{ item }">
         <v-chip
           style="font-size: 12px"
-          :color="item.statusInvoice === 0 ? 'grey' : 'primary200'"
-          v-text="item.statusInvoice === 0 ? 'Unpaid' : 'Paid'"
+          :color="item.statusInvoice.toLowerCase() === 'unpaid' ? 'grey' : 'primary200'"
+          v-text="item.statusInvoice.toLowerCase() === 'unpaid' ? 'Unpaid' : 'Paid'"
         />
-      </template>
-      <template #[`item.action`]="{ item }">
-        <v-btn
-          icon
-          small
-          @click="deleteInvoice(item.id)"
-        >
-          <v-icon
-            size="20"
-            v-text="item.action"
-          />
-        </v-btn>
       </template>
       <template #[`item.statusPayment`]="{ item }">
         <c-text
@@ -125,6 +126,41 @@
           />
           {{ statusPaymentColor(item.statusPayment).text }}
         </c-text>
+      </template>
+      <template #[`item.action`]="{ item }">
+        <v-menu
+          bottom
+          left
+        >
+          <template #activator="{ on, attrs }">
+            <v-btn
+              icon
+              small
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon
+                size="20"
+                v-text="'mdi-dots-vertical'"
+              />
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item
+              dense
+              @click="fetchDetailInvoice(item.id)"
+            >
+              <v-list-item-title v-text="'Detail'" />
+            </v-list-item>
+            <v-divider />
+            <v-list-item
+              dense
+              @click="deleteInvoiceDialog(item.id)"
+            >
+              <v-list-item-title v-text="'Hapus'" />
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </template>
     </v-data-table>
     <v-container>
@@ -183,7 +219,7 @@
         </v-col>
         <v-col
           v-if="mobile"
-          cols="3"
+          cols="6"
           align-self="center"
         >
           <v-container>
@@ -198,41 +234,45 @@
             />
           </v-container>
         </v-col>
-        <v-col cols="auto" class="d-flex px-0 justify-end">
-          <v-col
-            v-if="!mobile"
-            cols="2"
-            class="px-0"
-          >
-            <v-select
-              v-model="itemsPerPage"
-              :items="itemsPerPageSelect"
-              item-text="text"
-              item-value="value"
-              dense
-              solo
-              @input="() => {page = 1; totalVisiblePagination = 5;}"
-            />
-          </v-col>
-          <v-col cols="auto" :class="`pe-0 ${mobile ? 'ps-0' : ''}`">
-            <v-btn
-              color="primary"
-              v-text="'Remind'"
-            />
-          </v-col>
-          <v-col cols="auto" class="pe-0">
-            <v-btn
-              color="primary"
-              v-text="'Export'"
-            />
-          </v-col>
-          <v-col cols="auto" class="pe-0">
-            <v-btn
-              color="primary"
-              @click="importDialog = !importDialog"
-              v-text="'Import'"
-            />
-          </v-col>
+        <v-col cols="6">
+          <v-container class="pe-0">
+            <v-row justify="end">
+              <v-col
+                v-if="!mobile"
+                cols="2"
+                class="px-0"
+              >
+                <v-select
+                  v-model="itemsPerPage"
+                  :items="itemsPerPageSelect"
+                  item-text="text"
+                  item-value="value"
+                  dense
+                  solo
+                  @input="() => {page = 1; totalVisiblePagination = 5;}"
+                />
+              </v-col>
+              <v-col cols="auto" :class="`pe-0 ${mobile ? 'ps-0' : ''}`">
+                <v-btn
+                  color="primary"
+                  v-text="'Remind'"
+                />
+              </v-col>
+              <v-col cols="auto" class="pe-0">
+                <v-btn
+                  color="primary"
+                  v-text="'Export'"
+                />
+              </v-col>
+              <v-col cols="auto" class="pe-0">
+                <v-btn
+                  color="primary"
+                  @click="importDialog = !importDialog"
+                  v-text="'Import'"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
         </v-col>
       </v-row>
     </v-container>
@@ -281,7 +321,7 @@
               @input.prevent="onDrop($event.target)"
             >
             <v-container
-              :class="`import-file-dropzone rounded-xl ${dragover ? 'import-file-dropzone-active' : ''}`"
+              :class="`import-file-dropzone rounded-xl ${dragover ? 'import-file-dropzone-active' : (showImportError ? 'import-file-dropzone-error' : '')}`"
               @drop.prevent="onDrop($event.dataTransfer)"
               @dragover.prevent="dragover = true"
               @dragenter.prevent="dragover = true"
@@ -305,10 +345,23 @@
                 v-text="'MAX. File Size : 10MB'"
               />
             </v-container>
-            <v-list v-if="importedFiles.length > 0">
+            <v-card
+              v-show="showImportError"
+              rounded="lg"
+              color="red"
+              dark
+              flat
+              class="pa-1 my-3 text-center"
+            >
+              <c-text
+                font-size="12"
+                class="ma-0"
+              >
+                File harus memiliki format excel (.xls, .xlsx) dan tidak lebih dari 10MB
+              </c-text>
+            </v-card>
+            <v-list v-if="importedFiles !== null">
               <v-list-item
-                v-for="(file, index) in importedFiles"
-                :key="index"
                 dense
                 class="elevation-2 mt-3 rounded-lg"
               >
@@ -325,20 +378,20 @@
                       class="ma-0"
                       font-size="14"
                       font-weight="600"
-                      v-text="file.name"
+                      v-text="importedFiles.name"
                     />
                     <c-text
                       class="ma-0"
                       font-size="12"
                       color="neutral700"
-                      v-text="formatFileSize(file.size)"
+                      v-text="formatFileSize(importedFiles.size)"
                     />
                   </v-list-item-title>
                 </v-list-item-content>
                 <v-btn
                   color="red"
                   icon
-                  @click="removeImportedFile(index)"
+                  @click="importedFiles = null"
                 >
                   <v-icon
                     v-text="'mdi-window-close'"
@@ -346,7 +399,7 @@
                 </v-btn>
               </v-list-item>
             </v-list>
-            <v-container v-if="importedFiles.length > 0">
+            <v-container v-if="importedFiles !== null">
               <v-row justify="end">
                 <v-btn
                   class="mt-5"
@@ -406,17 +459,30 @@
 </template>
 
 <script>
+import PreviewDetailInvoicePage from './PreviewDetailInvoicePage.vue'
 import * as numberFormat from '@/utils/numberFormat'
+import * as Api from '@/values/api'
+import * as Request from '@/utils/request'
 
 export default {
   name: 'DataTableInvoicesPage',
 
+  components: {
+    PreviewDetailInvoicePage
+  },
+
   data () {
     return {
+      invoices: [],
+      isLoading: true,
+      isLoadingDetailInvoice: true,
+      detailInvoiceDialog: false,
+      detailInvoice: {},
       importDialog: false,
       successImportDialog: false,
+      showImportError: false,
       dragover: false,
-      importedFiles: [],
+      importedFiles: null,
       searchKeyword: '',
       selectedCategory: 'all',
       page: 1,
@@ -431,7 +497,7 @@ export default {
       ],
       selectedRow: [],
       headers: [
-        { text: 'Invoice ID', value: 'id' },
+        { text: 'Invoice ID', value: 'invoiceNumber' },
         { text: 'Invoice Date', value: 'date', align: 'center' },
         { text: 'Invoice To', value: 'to', align: 'center' },
         { text: 'Amount', value: 'amount', align: 'center' },
@@ -443,9 +509,8 @@ export default {
           filter: this.filterByCategory
         },
         { text: 'Status Payment', value: 'statusPayment', align: 'center' },
-        { text: 'Action', value: 'action', align: 'center' }
-      ],
-      invoices: []
+        { text: 'Action', value: 'action', align: 'center', filter: false }
+      ]
     }
   },
 
@@ -464,23 +529,59 @@ export default {
   },
 
   mounted () {
-    this.setDummy()
+    this.fetchInvoices()
   },
 
   methods: {
+    async fetchInvoices () {
+      this.isLoading = true
+      await Request.get({
+        url: Api.invoicesByUser,
+        data: {
+          userid: this.$store.state.user.id.toString()
+        },
+        token: this.$store.state.user.token
+      })
+        .then((response) => {
+          this.invoices = []
+          response.data.data.map((el) => {
+            return this.invoices.push({
+              id: el.id,
+              invoiceNumber: el.invoice_number,
+              date: el.date,
+              to: `${el.client.first_name} ${el.client.last_name}`,
+              amount: el.total,
+              dueDate: el.date_due,
+              statusInvoice: el.status,
+              statusPayment: el.status_payment
+            })
+          })
+        })
+        .catch((err) => {
+          const result = err.response
+          this.$nuxt.$emit('open-snackbar', {
+            message: result.data.message,
+            status: result.status
+          })
+        })
+        .finally(() => {
+          this.isLoading = false
+        })
+    },
+
     statusPaymentColor (value) {
       let statusColor = 'neutral700'
       let statusText = 'Pending'
-      if (value === 0) {
+      if (value.toLowerCase() === 'pending') {
         statusColor = 'neutral700'
         statusText = 'Pending'
-      } else if (value === 1) {
+      } else if (value.toLowerCase() === 'success') {
         statusColor = 'green'
         statusText = 'Success'
-      } else if (value === 2) {
+      } else if (value.toLowerCase() === 'expired') {
         statusColor = 'orange'
         statusText = 'Expired'
-      } else if (value === 3) {
+      } else if (value.toLowerCase() === 'failed') {
         statusColor = 'red'
         statusText = 'Failed'
       }
@@ -491,56 +592,104 @@ export default {
       }
     },
 
-    setDummy () {
-      for (let i = 0; i < 60; i++) {
-        this.invoices.push({
-          id: i >= 10 ? `451049${i}` : (i >= 100 ? `45104${i}` : `4510490${i}`),
-          date: 'Mei 30, 2022',
-          to: 'Alterra Academy',
-          amount: this.randomInt(10, 90) * 100000,
-          dueDate: 'in 12 days',
-          statusInvoice: this.randomInt(0, 1),
-          statusPayment: this.randomInt(0, 3),
-          action: 'mdi-delete'
-        })
-      }
-    },
-
-    randomInt (min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min
-    },
-
     search () {},
 
     changeCategory (category) {
       this.selectedCategory = category.toLowerCase()
     },
 
-    filterByCategory (value) {
-      const category = value === 0 ? 'unpaid' : 'paid'
-      if (this.selectedCategory.toLowerCase() === 'all') { return true }
-      return this.selectedCategory.toLowerCase() === category
+    filterByCategory (value, search, item) {
+      if (search === '') {
+        const category = value.toLowerCase()
+        if (this.selectedCategory.toLowerCase() === 'all') { return true }
+        return this.selectedCategory.toLowerCase() === category
+      } else {
+        return Object.values(item).some((prop) => {
+          return (String(prop).toLowerCase()).includes(search.toLowerCase())
+        })
+      }
     },
 
     checkToAll () {},
 
-    deleteInvoice (invoiceId) {},
+    deleteInvoiceDialog (invoiceId) {
+      this.$nuxt.$emit('open-message-dialog', {
+        message: 'Hapus Tagihan',
+        description: 'Apakah anda yakin ingin menghapus tagihan ini?',
+        icon: 'mdi-help-circle-outline',
+        iconColor: 'primary',
+        actionButtons: [
+          { color: 'primary', text: 'Ya', action: () => { this.deleteInvoiceAction(invoiceId) } },
+          { color: 'red', text: 'Batal' }
+        ]
+      })
+    },
+
+    async deleteInvoiceAction (invoiceId) {
+      let result = null
+      this.$nuxt.$emit('open-loading', true)
+      await Request.del({
+        url: Api.deleteInvoice + '/' + invoiceId.toString(),
+        token: this.$store.state.user.token
+      })
+        .then((response) => { result = response })
+        .catch((err) => { result = err.response })
+        .finally(async () => {
+          this.$nuxt.$emit('open-loading', false)
+          await this.fetchInvoices()
+          this.$nuxt.$emit('open-snackbar', {
+            message: result.data.message !== null ? result.data.message : 'Maaf terjadi kesalahan',
+            status: result.status
+          })
+        })
+    },
 
     onDrop (e) {
+      this.showImportError = false
       this.dragover = false
-      this.importedFiles.push(e.files[0])
-      const lastFile = this.importedFiles[this.importedFiles.length - 1]
-      const extension = (lastFile.name).split('.')
-      this.importedFiles[this.importedFiles.length - 1].extension = extension[extension.length - 1]
+      const extension = (e.files[0].name).split('.')
+      const extensionName = extension[extension.length - 1]
+      const size = e.files[0].size
+      if (
+        (extensionName === 'xls' || extensionName === 'xlsx') &&
+        size <= 10485760
+      ) {
+        this.importedFiles = e.files[0]
+        this.importedFiles.extension = extensionName
+      } else {
+        this.showImportError = true
+      }
     },
 
-    removeImportedFile (index) {
-      this.importedFiles.splice(index, 1)
-    },
-
-    submitImport () {
-      this.importDialog = !this.importDialog
-      this.successImportDialog = !this.successImportDialog
+    async submitImport () {
+      let result = null
+      this.$nuxt.$emit('open-loading', true)
+      await Request.post({
+        url: Api.importInvoice,
+        token: this.$store.state.user.token,
+        data: {
+          files: this.importedFiles
+        },
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then(async (response) => {
+          result = response
+          this.importDialog = !this.importDialog
+          this.successImportDialog = !this.successImportDialog
+          await this.fetchInvoices()
+        })
+        .catch((err) => {
+          result = err.response
+          this.$nuxt.$emit('open-snackbar', {
+            message: result.data.message !== null ? result.data.message : 'Maaf terjadi kesalahan',
+            status: result.status
+          })
+        })
+        .finally(() => {
+          this.$nuxt.$emit('open-loading', false)
+        })
     },
 
     formatFileSize (bytes, decimalPoint = null) {
@@ -550,6 +699,69 @@ export default {
       const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+    },
+
+    async fetchDetailInvoice (invoiceId) {
+      this.isLoadingDetailInvoice = true
+      this.detailInvoiceDialog = true
+      this.detailInvoice = {}
+      await Request.get({
+        url: `${Api.detailInvoiceById}/${invoiceId}`,
+        token: this.$store.state.user.token
+      })
+        .then((response) => {
+          const result = response.data
+          this.detailInvoice = {
+            id: result.data.invoice.id,
+            invoiceNumber: result.data.invoice.invoice_number,
+            firstName: result.data.invoice.client.first_name,
+            lastName: result.data.invoice.client.last_name,
+            email: result.data.invoice.client.email,
+            phone: result.data.invoice.client.phone_number,
+            province: result.data.invoice.client.state,
+            city: result.data.invoice.client.city,
+            postalCode: result.data.invoice.client.postal_code,
+            businessName: 'PT Mitra Makmur Sejahtera',
+            businessEmail: 'mitramakmur@gmail.com',
+            date: result.data.invoice.date,
+            dueDate: result.data.invoice.date_due,
+            paymentType: result.data.invoice.type_payment === 'online' ? 'Online' : 'Cash',
+            subTotal: result.data.invoice.sub_total,
+            total: result.data.invoice.total,
+            discount: 0,
+            tax: 0,
+            items: []
+          }
+          result.data.invoice.additional_costs.map((el) => {
+            if (el.type.toLowerCase() === 'tax') {
+              this.detailInvoice.tax = el.total
+            } else if (el.type.toLowerCase() === 'disc') {
+              this.detailInvoice.discount = el.total
+            }
+            return null
+          })
+          result.data.invoice.items.map((item) => {
+            return this.detailInvoice.items.push({
+              id: item.id,
+              name: item.name,
+              quantity: item.quantity,
+              description: item.description,
+              price: item.price,
+              amount: item.price * item.quantity
+            })
+          })
+        })
+        .catch((err) => {
+          this.detailInvoiceDialog = false
+          const result = err.response
+          this.$nuxt.$emit('open-snackbar', {
+            message: result.data.message,
+            status: result.status
+          })
+        })
+        .finally(() => {
+          this.isLoadingDetailInvoice = false
+        })
     }
   }
 }
@@ -622,8 +834,14 @@ export default {
   }
 
   .import-file-dropzone-active {
-    border: 5px dotted var(--v-primary-base);
+    border: 5px dashed var(--v-primary-base);
     background-color: var(--v-primary100-base);
+    padding: 0px !important;
+  }
+
+  .import-file-dropzone-error {
+    border: 5px dashed red;
+    background-color: rgba(255, 0, 0, 0.1);
     padding: 0px !important;
   }
 </style>
