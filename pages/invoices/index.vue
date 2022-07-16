@@ -84,11 +84,11 @@ export default {
     mobile () {
       return this.$vuetify.breakpoint.mobile
     }
-  },
-
-  mounted () {
-    console.log(this.$store.state.user.token)
-    console.log(this.$store.state.user.id)
   }
+
+  // mounted () {
+  //   console.log(this.$store.state.user.token)
+  //   console.log(this.$store.state.user.id)
+  // }
 }
 </script>
