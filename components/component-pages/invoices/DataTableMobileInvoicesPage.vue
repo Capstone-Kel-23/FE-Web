@@ -20,7 +20,7 @@
                 font-size="20"
                 font-weight="bold"
                 class="ma-0"
-                v-text="'Import Invoices'"
+                v-text="'Impor Tagihan'"
               />
             </v-col>
             <v-col cols="auto">
@@ -62,12 +62,12 @@
               <c-text
                 font-size="14"
                 class="text-center ma-0"
-                v-text="'Drag and drop file here to Upload or click here to select your file'"
+                v-text="'Seret dan jatuhkan file di sini untuk Unggah atau klik di sini untuk memilih file Anda'"
               />
               <c-text
                 font-size="12"
                 class="text-center mb-5"
-                v-text="'MAX. File Size : 10MB'"
+                v-text="'MAKS. Ukuran file : 10MB'"
               />
             </v-container>
             <v-card
@@ -130,7 +130,7 @@
                   class="mt-5"
                   color="primary"
                   @click="submitImport"
-                  v-text="'Submit'"
+                  v-text="'Unggah'"
                 />
               </v-row>
             </v-container>
@@ -173,7 +173,7 @@
               font-size="24"
               font-weight="bold"
               class="text-center"
-              v-text="'File Uploaded Successfully!'"
+              v-text="'File Berhasil Diunggah!'"
             />
           </v-row>
         </v-container>
@@ -184,7 +184,7 @@
       <v-text-field
         v-model="searchKeyword"
         class="search-field-wrapper"
-        placeholder="Search Invoice"
+        placeholder="Cari Tagihan"
         color="primary"
         hide-details=""
         background-color="white"
@@ -203,7 +203,7 @@
               font-size="14"
               :color="selectedCategory === 'all' ? 'black' : 'primary'"
               :class="`tab-list-category text-center ma-0 ${selectedCategory === 'all' ? '' : 'unselected-category'}`"
-              v-text="'All'"
+              v-text="'Semua'"
             />
           </v-col>
           <v-col
@@ -215,19 +215,19 @@
               font-size="14"
               :color="selectedCategory === 'paid' ? 'black' : 'primary'"
               :class="`tab-list-category text-center ma-0 ${selectedCategory === 'paid' ? '' : 'unselected-category'}`"
-              v-text="'Paid'"
+              v-text="'Dibayar'"
             />
           </v-col>
           <v-col
             :class="`tab-catagory-wrapper ${selectedCategory === 'unpaid' ? 'tab-catagory-wrapper-active' : ''} pb-1`"
-            cols="3"
+            cols="5"
             @click="changeCategory('unpaid')"
           >
             <c-text
               font-size="14"
               :color="selectedCategory === 'unpaid' ? 'black' : 'primary'"
               :class="`tab-list-category text-center ma-0 ${selectedCategory === 'unpaid' ? '' : 'unselected-category'}`"
-              v-text="'Unpaid'"
+              v-text="'Belum Dibayar'"
             />
           </v-col>
         </v-row>
@@ -371,7 +371,7 @@
           font-size="12"
           color="primary"
           class="text-center mt-5"
-          v-text="'Your invoices will show up here. Click the plus button below to Create your first invoice!'"
+          v-text="'Tagihan Anda akan muncul di sini. Klik plus tombol di bawah ini untuk membuat tagihan yang pertama!'"
         />
       </v-container>
       <!-- END INVOICE LIST -->

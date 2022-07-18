@@ -327,16 +327,16 @@
                 />
               </td>
             </tr>
-            <tr>
-              <td>
+            <tr class="px-3 grey">
+              <td class="rounded-l">
                 <c-text
                   class="ma-0"
                   font-size="14"
                   font-weight="600"
-                  v-text="'Total'"
+                  v-text="'Total :'"
                 />
               </td>
-              <td>
+              <td class="rounded-r">
                 <c-text
                   v-if="!isLoading"
                   class="ma-0"
@@ -395,5 +395,20 @@ export default {
 <style scoped>
   .total-invoice-wrapper tr td:first-child {
     padding-right: 10px;
+  }
+
+  .total-invoice-wrapper {
+    border-spacing: 0px;
+  }
+
+  .total-invoice-wrapper tr td {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 1.5px;
+    padding-top: 1.5px;
+  }
+
+  .total-invoice-wrapper tr:first-child td {
+    padding-top: 0;
   }
 </style>

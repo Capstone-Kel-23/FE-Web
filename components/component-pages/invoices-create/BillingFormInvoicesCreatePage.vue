@@ -3,11 +3,11 @@
     <!-- BEGIN FORM HEADER -->
     <c-text
       font-size="24"
-      v-text="'Billing'"
+      v-text="'Penagihan'"
     />
     <c-text
       color="neutral700"
-      v-text="'Billing details appear in your invoice. Invoice Date is used in the dashboard and reports. Select the date you expect to get paid as the Due Date.'"
+      v-text="'Detail penagihan muncul di faktur Anda. Tanggal Faktur digunakan di dasbor dan laporan. Pilih tanggal yang Anda harapkan untuk dibayar sebagai Tanggal Jatuh Tempo.'"
     />
     <v-divider class="mb-3" />
     <!-- END FORM HEADER -->
@@ -20,7 +20,7 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Client *'"
+            v-text="'Klien *'"
           />
           <input
             ref="fileBrowser"
@@ -49,8 +49,8 @@
               </v-icon>
               <c-text
                 color="neutral700"
-                class="ma-0 text-center"
-                v-text="'Change Profile Picture'"
+                class="ma-0 text-center mx-auto"
+                v-text="'Ubah Foto Profil'"
               />
             </v-container>
             <div v-else>
@@ -71,7 +71,7 @@
             class="ma-0 mt-1"
             style="white-space: nowrap"
             color="red"
-            v-text="'Profile Picture tidak boleh kosong!'"
+            v-text="'Foto Profil tidak boleh kosong!'"
           />
           <v-btn
             v-if="profilePicFile !== null"
@@ -99,7 +99,7 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Invoice Date *'"
+            v-text="'Tanggal Tagihan *'"
           />
           <v-menu
             v-model="invoiceDateMenu"
@@ -111,12 +111,12 @@
             <template #activator="{ on, attrs }">
               <v-text-field
                 :value="invoiceDateSelected"
-                :rules="requiredRules('Invoice Date')"
+                :rules="requiredRules('Tanggal Tagihan')"
                 dense
                 background-color="white"
                 outlined
                 readonly
-                placeholder="Enter Invoice Date"
+                placeholder="Masukkan Tanggal Tagihan"
                 append-icon="mdi-calendar"
                 v-bind="attrs"
                 v-on="on"
@@ -154,7 +154,7 @@
                       outlined
                       color="primary"
                       @click="invoiceDateMenu = !invoiceDateMenu"
-                      v-text="'CANCEL'"
+                      v-text="'BATAL'"
                     />
                   </v-col>
                   <v-col cols="6">
@@ -163,7 +163,7 @@
                       width="100%"
                       color="primary"
                       @click="saveSelectedInvoiceDate"
-                      v-text="'SAVE'"
+                      v-text="'SIMPAN'"
                     />
                   </v-col>
                 </v-row>
@@ -176,7 +176,7 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Due Date *'"
+            v-text="'Batas Waktu *'"
           />
           <v-menu
             v-model="dueDateMenu"
@@ -188,12 +188,12 @@
             <template #activator="{ on, attrs }">
               <v-text-field
                 :value="dueDateSelected"
-                :rules="requiredRules('Due Date')"
+                :rules="requiredRules('Batas Waktu')"
                 dense
                 background-color="white"
                 outlined
                 readonly
-                placeholder="Enter Due Date"
+                placeholder="Masukkan Batas Waktu"
                 append-icon="mdi-calendar"
                 v-bind="attrs"
                 v-on="on"
@@ -231,7 +231,7 @@
                       outlined
                       color="primary"
                       @click="dueDateMenu = !dueDateMenu"
-                      v-text="'CANCEL'"
+                      v-text="'BATAL'"
                     />
                   </v-col>
                   <v-col cols="6">
@@ -240,7 +240,7 @@
                       width="100%"
                       color="primary"
                       @click="saveSelectedDueDate"
-                      v-text="'SAVE'"
+                      v-text="'SIMPAN'"
                     />
                   </v-col>
                 </v-row>
@@ -257,32 +257,32 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Invoice ID *'"
+            v-text="'ID Tagihan *'"
           />
           <v-text-field
             :value="invoiceId"
-            :rules="requiredRules('Invoice ID')"
+            :rules="requiredRules('ID Tagihan')"
             dense
             background-color="white"
             outlined
-            placeholder="Enter Invoice Number"
+            placeholder="Masukkan Nomor Tagihan"
             @input="inputValue('input-invoice-id', $event)"
           />
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Type Payment *'"
+            v-text="'Jenis Pembayaran *'"
           />
           <v-select
             :value="paymentType"
-            :rules="requiredRules('Type Payment')"
+            :rules="requiredRules('Jenis Pembayaran')"
             :items="LOV.paymentType"
             item-text="text"
             item-value="value"
             dense
             background-color="white"
             outlined
-            placeholder="Enter Type Payment"
+            placeholder="Masukkan Jenis Pembayaran"
             @input="inputValue('input-payment-type', $event)"
           />
           <!-- END RIGHT SIDE FORM -->

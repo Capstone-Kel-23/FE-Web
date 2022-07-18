@@ -99,6 +99,10 @@ export default {
     mobile () {
       return this.$vuetify.breakpoint.mobile
     }
+  },
+
+  methods: {
+    submit () {}
   }
 }
 </script>

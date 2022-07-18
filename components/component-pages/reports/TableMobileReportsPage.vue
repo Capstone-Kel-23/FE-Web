@@ -6,23 +6,23 @@
         <v-btn
           :outlined="category.toLowerCase() !== 'paid' ? true : false"
           color="primary"
-          class="rounded-0"
+          class="rounded-0 category-btn-wrapper"
           @click="changeCategory('paid')"
-          v-text="'Paid'"
+          v-text="'Terbayar'"
         />
         <v-btn
           :outlined="category.toLowerCase() !== 'unpaid' ? true : false"
           color="primary"
-          class="rounded-0"
+          class="rounded-0 category-btn-wrapper"
           @click="changeCategory('unpaid')"
-          v-text="'Unpaid'"
+          v-text="'Belum Terbayar'"
         />
         <v-btn
           :outlined="category.toLowerCase() !== 'clients' ? true : false"
           color="primary"
-          class="rounded-0"
+          class="rounded-0 category-btn-wrapper"
           @click="changeCategory('clients')"
-          v-text="'Client'"
+          v-text="'Klien'"
         />
       </v-row>
       <v-data-table
@@ -62,10 +62,10 @@ export default {
       sortDesc: true,
       dataReports: [],
       headers: [
-        { text: 'Month', value: 'month' },
-        { text: 'Clients', value: 'clients', align: 'center' },
-        { text: 'Invoices', value: 'invoices', align: 'center' },
-        { text: 'Paid', value: 'paid', align: 'center' }
+        { text: '', value: 'month' },
+        { text: 'Klien', value: 'clients', align: 'center' },
+        { text: 'Tagihan', value: 'invoices', align: 'center' },
+        { text: 'Terbayar', value: 'paid', align: 'center' }
       ]
     }
   },
@@ -144,5 +144,9 @@ export default {
 
   .table-report-wrapper {
     border-top: 1px solid var(--v-neutral600-base) !important;
+  }
+
+  .category-btn-wrapper {
+    font-size: 12px;
   }
 </style>

@@ -3,11 +3,11 @@
     <!-- BEGIN FORM HEADER -->
     <c-text
       font-size="24"
-      v-text="'Company'"
+      v-text="'Perusahaan'"
     />
     <c-text
       color="neutral700"
-      v-text="'Change the address, logo, and other information for your company.'"
+      v-text="'Ubah alamat, logo, dan informasi lainnya untuk perusahaan Anda.'"
     />
     <v-divider class="mb-3" />
     <!-- END FORM HEADER -->
@@ -25,14 +25,14 @@
                 <c-text
                   font-size="18"
                   class="ma-0 mb-1"
-                  v-text="'Title'"
+                  v-text="'Judul'"
                 />
                 <v-text-field
                   :value="title"
                   dense
                   background-color="white"
                   outlined
-                  placeholder="Enter Title"
+                  placeholder="Masukkan judul"
                   @input="inputValue('input-title', $event)"
                 />
                 <c-text
@@ -45,7 +45,7 @@
                   dense
                   background-color="white"
                   outlined
-                  placeholder="Enter Subheading"
+                  placeholder="Masukkan Subheading"
                   @input="inputValue('input-subheading', $event)"
                 />
               </v-col>
@@ -78,7 +78,7 @@
                     <c-text
                       color="neutral700"
                       class="ma-0 text-center"
-                      v-text="'Drop files here to upload'"
+                      v-text="'Tarik gambar kesini untuk mengunggah'"
                     />
                     <c-text
                       v-if="!validLogoFile"

@@ -6,7 +6,7 @@
         <v-col cols="5">
           <v-text-field
             v-model="searchKeyword"
-            placeholder="Search Invoices"
+            placeholder="Cari Klien"
             color="white"
             solo
             append-icon="mdi-magnify"
@@ -188,11 +188,11 @@ export default {
         { text: '50', value: 50 }
       ],
       headers: [
-        { text: 'Client ID', value: 'id' },
-        { text: 'Full Name', value: 'fullName', align: 'center' },
+        { text: 'ID Klien', value: 'id' },
+        { text: 'Nama Lengkap', value: 'fullName', align: 'center' },
         { text: 'Email', value: 'email', align: 'center' },
-        { text: 'Location', value: 'location', align: 'center' },
-        { text: 'Phone', value: 'phone', align: 'center' },
+        { text: 'Lokasi', value: 'location', align: 'center' },
+        { text: 'No. Telp.', value: 'phone', align: 'center' },
         { text: 'Kode Pos', value: 'kodePos', align: 'center' },
         { text: 'Action', value: 'action', align: 'center' }
       ],
@@ -231,6 +231,20 @@ export default {
 </script>
 
 <style scoped>
+  .data-table-wrapper >>> table thead {
+    background-color: var(--v-grey-base);
+  }
+
+  .data-table-wrapper >>> table thead tr th,
+  .data-table-wrapper >>> table tbody tr td {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .data-table-wrapper >>> table tr .v-simple-checkbox i {
+    color: var(--v-primary-base);
+  }
+
   .pagination-wrapper >>> .v-pagination__navigation {
     background-color: var(--v-grey-base) !important;
   }

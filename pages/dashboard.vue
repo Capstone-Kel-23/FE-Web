@@ -15,7 +15,7 @@
           v-if="mobile"
           v-model="searchKeyword"
           class="search-field-wrapper mb-5"
-          placeholder="Search Invoice"
+          placeholder="Cari Tagihan"
           hide-details=""
           color="primary"
           background-color="white"
@@ -50,7 +50,7 @@
                   font-size="20"
                   font-weight="bold"
                   class="ma-0"
-                  v-text="'Year Income Overview'"
+                  v-text="'Tinjauan Pendapatan Tahunan'"
                 />
               </v-col>
               <v-col
@@ -162,23 +162,23 @@ export default {
       dateReportPicker: '',
       statisticsCount: [
         {
-          title: 'Total Invoices',
+          title: 'Total Tagihan',
           value: 12000
         },
         {
-          title: 'Paid Invoices',
+          title: 'Tagihan Dibayar',
           value: 5500
         },
         {
-          title: 'Unpaid Invoices',
+          title: 'Tagihan Yang Belum Dibayar',
           value: 6500
         },
         {
-          title: 'Total Client',
+          title: 'Total Klien',
           value: 8300
         },
         {
-          title: 'Total Product',
+          title: 'Total Produk',
           value: 10000
         }
       ],
@@ -201,11 +201,11 @@ export default {
       },
       series: [
         {
-          name: 'Inflow',
+          name: 'Arus Masuk',
           data: [500, 4000, 2000, 7500, 5500, 8000, 4000, 5500, 3000, 7000, 1000, 8000]
         },
         {
-          name: 'Outflow',
+          name: 'Arus Keluar',
           data: [3000, 4000, 3000, 3000, 3000, 1500, 5500, 5000, 4500, 6500, 2500, 9000]
         }
       ],
@@ -257,17 +257,17 @@ export default {
       ],
       dataProductReports: [
         {
-          title: 'Total Product  Ordered',
+          title: 'Total Produk yang Dipesan',
           icon: '/images/icon/dashboard/product-report/data-pending.svg',
           value: 300
         },
         {
-          title: 'Amount Paid',
+          title: 'Total Terbayarkan',
           icon: '/images/icon/dashboard/product-report/paid.svg',
           value: numberFormat.currency(3000000)
         },
         {
-          title: 'Amount Pending',
+          title: 'Total Tertunda',
           icon: '/images/icon/dashboard/product-report/add-shopping-cart.svg',
           value: numberFormat.currency(3000000)
         }

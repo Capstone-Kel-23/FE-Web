@@ -6,7 +6,7 @@
           <c-text
             font-weight="bold"
             font-size="20"
-            v-text="'Product Report'"
+            v-text="'Laporan Produk'"
           />
         </v-col>
         <v-col
@@ -57,7 +57,7 @@
                       outlined
                       color="primary"
                       @click="dateReportMenu = !dateReportMenu"
-                      v-text="'CANCEL'"
+                      v-text="'BATAL'"
                     />
                   </v-col>
                   <v-col>
@@ -66,7 +66,7 @@
                       width="100%"
                       color="primary"
                       @click="saveSelectedDate"
-                      v-text="'SAVE'"
+                      v-text="'SIMPAN'"
                     />
                   </v-col>
                 </v-row>

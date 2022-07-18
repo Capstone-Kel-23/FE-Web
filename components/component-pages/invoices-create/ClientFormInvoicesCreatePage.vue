@@ -3,11 +3,11 @@
     <!-- BEGIN FORM HEADER -->
     <c-text
       font-size="24"
-      v-text="'Client'"
+      v-text="'Klien'"
     />
     <c-text
       color="neutral700"
-      v-text="'Client is used in the clients and reports.'"
+      v-text="'Klien digunakan dalam klien dan laporan.'"
     />
     <v-divider class="mb-3" />
     <!-- END FORM HEADER -->
@@ -26,29 +26,29 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'First Name *'"
+            v-text="'Nama Depan *'"
           />
           <v-text-field
             :value="firstName"
-            :rules="requiredRules('First Name')"
+            :rules="requiredRules('Nama Depan')"
             dense
             background-color="white"
             outlined
-            placeholder="Enter First Name"
+            placeholder="Masukkan Nama Depan"
             @input="inputValue('input-first-name', $event)"
           />
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Last Name *'"
+            v-text="'Nama Belakang *'"
           />
           <v-text-field
             :value="lastName"
-            :rules="requiredRules('Last Name')"
+            :rules="requiredRules('Nama Belakang')"
             dense
             background-color="white"
             outlined
-            placeholder="Enter Last Name"
+            placeholder="Masukkan Nama Belakang"
             @input="inputValue('input-last-name', $event)"
           />
         </v-col>
@@ -67,21 +67,21 @@
             dense
             background-color="white"
             outlined
-            placeholder="Enter Email"
+            placeholder="Masukkan Email"
             @input="inputValue('input-email', $event)"
           />
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Phone *'"
+            v-text="'Nomor Telepon *'"
           />
           <v-text-field
             :value="phone"
-            :rules="requiredRules('Phone')"
+            :rules="requiredRules('Nomor Telepon')"
             dense
             background-color="white"
             outlined
-            placeholder="Enter Phone"
+            placeholder="Masukkan Nomor Telepon"
             @input="inputValue('input-phone', $event)"
           />
         </v-col>
@@ -92,7 +92,7 @@
     <!-- BEGIN ADDRESS FORM GROUP -->
     <c-text
       font-size="24"
-      v-text="'Address'"
+      v-text="'Alamat'"
     />
     <v-container>
       <v-row justify="space-between">
@@ -103,7 +103,7 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Province *'"
+            v-text="'Provinsi *'"
           />
           <v-autocomplete
             :items="location.provinces"
@@ -114,13 +114,13 @@
             dense
             background-color="white"
             outlined
-            placeholder="Enter Province"
+            placeholder="Masukkan Provinsi"
             @input="inputValue('input-province', $event)"
           />
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'City / Regency *'"
+            v-text="'Kota / Kabupaten *'"
           />
           <v-autocomplete
             :items="location.regencies"
@@ -131,7 +131,7 @@
             dense
             background-color="white"
             outlined
-            placeholder="Enter City / Regency"
+            placeholder="Masukkan Kota/Kabupaten"
             @input="inputValue('input-regency', $event)"
           />
         </v-col>
@@ -142,7 +142,7 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'District *'"
+            v-text="'Kecamatan *'"
           />
           <v-autocomplete
             :items="location.districts"
@@ -153,24 +153,24 @@
             dense
             background-color="white"
             outlined
-            placeholder="Enter Districts"
+            placeholder="Masukkan Kecamatan"
             @input="inputValue('input-district', $event)"
           />
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Sub Disctrict / Village *'"
+            v-text="'Kelurahan / Desa *'"
           />
           <v-autocomplete
             :items="location.villages"
             item-text="name"
             item-value="id"
             :value="selectedLocation.village"
-            :rules="requiredRules('Kelurahan')"
+            :rules="requiredRules('Kelurahan/Desa')"
             dense
             background-color="white"
             outlined
-            placeholder="Enter Sub Disctrict / Village"
+            placeholder="Masukkan Kelurahan/Desa"
             @input="inputValue('input-village', $event)"
           />
         </v-col>
@@ -180,30 +180,30 @@
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Postal / Zip Code *'"
+            v-text="'Kode Pos *'"
           />
           <v-text-field
             :value="postalCode"
-            :rules="requiredRules('Postal / Zip Code')"
+            :rules="requiredRules('Kode Pos')"
             dense
             background-color="white"
             outlined
-            placeholder="Enter Postal / Zip Code"
+            placeholder="Masukkan Kode Pos"
             @input="inputValue('input-postal-code', $event)"
           />
           <c-text
             font-size="18"
             class="ma-0 mb-1"
-            v-text="'Address *'"
+            v-text="'Alamat *'"
           />
           <v-textarea
             :value="address"
-            :rules="requiredRules('Address')"
+            :rules="requiredRules('Alamat')"
             rows="3"
             dense
             background-color="white"
             outlined
-            placeholder="Enter Address"
+            placeholder="Masukkan Alamat"
             @input="inputValue('input-address', $event)"
           />
         </v-col>

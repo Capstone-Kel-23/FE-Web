@@ -18,20 +18,20 @@
           :class="`${mobile ? 'item-form-mobile' : ''}`"
           background-color="white"
           :outlined="!mobile"
-          placeholder="Enter Item Name"
+          placeholder="Masukkan Nama Item"
           @input="inputValueItems('input-invoice-item', index, $event)"
         />
       </template>
       <template #[`item.description`]="{ item, index }">
         <v-textarea
           :value="item.description"
-          :rules="requiredRules('Description')"
+          :rules="requiredRules('Deskripsi')"
           rows="1"
           dense
           :class="`${mobile ? 'item-form-mobile' : ''}`"
           background-color="white"
           :outlined="!mobile"
-          placeholder="Enter Description"
+          placeholder="Masukkan Deskripsi"
           @input="inputValueItems('input-invoice-description', index, $event)"
         />
       </template>
@@ -45,7 +45,7 @@
             :class="`${mobile ? 'item-form-mobile' : ''}`"
             background-color="white"
             :outlined="!mobile"
-            placeholder="Enter Quantity"
+            placeholder="Masukkan Kuantitas"
             @input="inputValueItems('input-invoice-quantity', index, $event)"
           />
         </div>
@@ -53,13 +53,13 @@
       <template #[`item.price`]="{ item, index }">
         <v-currency-field
           :value="item.price"
-          :rules="requiredRules('Price')"
+          :rules="requiredRules('Harga')"
           prefix="Rp"
           dense
           :class="`${mobile ? 'item-form-mobile' : ''}`"
           background-color="white"
           :outlined="!mobile"
-          placeholder="Enter Price"
+          placeholder="Masukkan Harga"
           @input="inputValueItems('input-invoice-price', index, $event)"
         />
       </template>
@@ -89,7 +89,7 @@
         @click="addItem"
       >
         <v-icon>mdi-plus</v-icon>
-        Add an item
+        Tambahkan item
       </v-btn>
     </div>
     <v-row
@@ -103,7 +103,7 @@
       >
         <v-container class="py-0">
           <v-row justify="space-between">
-            <v-col cols="6">
+            <v-col cols="6" class="px-0">
               <c-text
                 class="ma-0 text-right"
                 v-text="'Sub Total'"
@@ -119,14 +119,14 @@
         </v-container>
         <v-container class="py-0">
           <v-row justify="space-between">
-            <v-col cols="6">
+            <v-col cols="6" class="px-0">
               <div
                 class="d-flex cursor-pointer fit-width ms-auto"
                 @click="showForm('discount')"
               >
                 <c-text
                   class="ma-0 me-1 text-right"
-                  v-text="'Add Discount'"
+                  v-text="'Tambah Diskon'"
                 />
                 <v-icon
                   v-text="showDiscountForm ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -154,14 +154,14 @@
         </v-container>
         <v-container class="py-0">
           <v-row justify="space-between">
-            <v-col cols="6">
+            <v-col cols="6" class="px-0">
               <div
                 class="d-flex cursor-pointer fit-width ms-auto"
                 @click="showForm('tax')"
               >
                 <c-text
                   class="ma-0 me-1 text-right"
-                  v-text="'Add Tax'"
+                  v-text="'Tambah Pajak'"
                 />
                 <v-icon
                   v-text="showTaxForm ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -189,7 +189,7 @@
         </v-container>
         <v-container class="py-0">
           <v-row justify="space-between">
-            <v-col cols="6">
+            <v-col cols="6" class="px-0">
               <c-text
                 class="ma-0 text-right"
                 v-text="'Total'"
@@ -256,15 +256,15 @@ export default {
       showDiscountForm: false,
       showTaxForm: false,
       quantityItemRules: [
-        ...this.requiredRules('Quantity'),
-        v => v >= 1 || 'Quantity minimal 1'
+        ...this.requiredRules('Kuantitas'),
+        v => v >= 1 || 'Kuantitas minimal 1'
       ],
       headers: [
         { text: 'Item', value: 'item' },
-        { text: 'Description', value: 'description' },
-        { text: 'Quantity', value: 'quantity' },
-        { text: 'Price', value: 'price' },
-        { text: 'Amount', value: 'amount' },
+        { text: 'Deskripsi', value: 'description' },
+        { text: 'Kuantitas', value: 'quantity' },
+        { text: 'Harga', value: 'price' },
+        { text: 'Jumlah', value: 'amount' },
         { text: '', value: 'remove' }
       ]
     }

@@ -11,14 +11,14 @@
             <c-text
               v-if="!mobile"
               font-size="32"
-              v-text="'Clients'"
+              v-text="'Klien'"
             />
             <v-col v-else>
               <c-text
                 font-size="20"
                 font-weight="bold"
                 class="text-center ma-0"
-                v-text="'Clients'"
+                v-text="'Klien'"
               />
             </v-col>
             <!-- END HEADER TITLE -->

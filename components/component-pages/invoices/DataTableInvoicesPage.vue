@@ -16,7 +16,7 @@
         <v-col cols="5">
           <v-text-field
             v-model="searchKeyword"
-            placeholder="Search Invoices"
+            placeholder="Cari Tagihan"
             color="white"
             solo
             append-icon="mdi-magnify"
@@ -35,21 +35,21 @@
           dark
           :color="selectedCategory === 'All'.toLowerCase() ? 'primary900' : 'primary400'"
           @click="changeCategory('All')"
-          v-text="'All'"
+          v-text="'Semua'"
         />
         <v-btn
           elevation="0"
           dark
           :color="selectedCategory === 'Paid'.toLowerCase() ? 'primary900' : 'primary400'"
           @click="changeCategory('Paid')"
-          v-text="'Paid'"
+          v-text="'Dibayar'"
         />
         <v-btn
           elevation="0"
           dark
           :color="selectedCategory === 'Unpaid'.toLowerCase() ? 'primary900' : 'primary400'"
           @click="changeCategory('Unpaid')"
-          v-text="'Unpaid'"
+          v-text="'Belum Dibayar'"
         />
       </v-row>
     </v-container>
@@ -100,12 +100,27 @@
         />
       </template>
       <template #[`item.dueDate`]="{ item }">
-        <c-text
-          font-size="12"
+        <v-tooltip
+          top
           :color="$moment(item.dueDate).diff($moment(), 'days') > 0 ? 'orange' : ''"
-          class="ma-0"
-          v-text="`${$moment(item.dueDate).diff($moment(), 'days') > 0 ? $moment(item.dueDate).endOf().fromNow() : 'Sudah Lewat'}`"
-        />
+        >
+          <template #activator="{ on, attrs }">
+            <div
+              v-bind="attrs"
+              v-on="on"
+            >
+              <c-text
+                font-size="12"
+                :color="$moment(item.dueDate).diff($moment(), 'days') > 0 ? 'orange' : ''"
+                class="ma-0"
+                v-text="`${$moment(item.dueDate).diff($moment(), 'days') > 0 ? $moment(item.dueDate).endOf().fromNow() : 'Sudah Lewat'}`"
+              />
+            </div>
+          </template>
+          <span>
+            {{ $moment(item.date).format('DD MMM, YYYY') }}
+          </span>
+        </v-tooltip>
       </template>
       <template #[`item.statusInvoice`]="{ item }">
         <v-chip
@@ -131,6 +146,8 @@
         <v-menu
           bottom
           left
+          nudge-left="25"
+          transition="slide-y-transition"
         >
           <template #activator="{ on, attrs }">
             <v-btn
@@ -145,20 +162,63 @@
               />
             </v-btn>
           </template>
-          <v-list dense>
+          <v-list
+            dense
+            class="py-0"
+          >
             <v-list-item
               dense
               @click="fetchDetailInvoice(item.id)"
             >
-              <v-list-item-title v-text="'Detail'" />
+              <v-list-item-title class="text-center" v-text="'Detail'" />
             </v-list-item>
             <v-divider />
             <v-list-item
               dense
               @click="deleteInvoiceDialog(item.id)"
             >
-              <v-list-item-title v-text="'Hapus'" />
+              <v-list-item-title class="text-center" v-text="'Hapus'" />
             </v-list-item>
+            <div
+              v-if="item.paymentType.toLowerCase() === 'cash'"
+            >
+              <v-divider />
+              <v-list-item
+                dense
+                @click="changeInvoiceStatusDialog(item)"
+              >
+                <v-list-item-title
+                  class="text-center"
+                  v-text="item.statusInvoice.toLowerCase() === 'unpaid' ? 'Tandai Dibayar' : 'Tandai Belum Dibayar'"
+                />
+              </v-list-item>
+            </div>
+            <v-tooltip
+              v-if="item.paymentType.toLowerCase() === 'online'"
+              bottom
+              nudge-bottom="-10"
+              color="orange"
+              transition="slide-y-transition"
+            >
+              <template #activator="{ on, attrs }">
+                <div
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-divider />
+                  <v-list-item
+                    dense
+                    disabled
+                  >
+                    <v-list-item-title
+                      class="text-center"
+                      v-text="item.statusInvoice.toLowerCase() === 'unpaid' ? 'Tandai Dibayar' : 'Tandai Belum Dibayar'"
+                    />
+                  </v-list-item>
+                </div>
+              </template>
+              <span>Hanya berlaku untuk pembayaran Cash</span>
+            </v-tooltip>
           </v-list>
         </v-menu>
       </template>
@@ -255,20 +315,21 @@
               <v-col cols="auto" :class="`pe-0 ${mobile ? 'ps-0' : ''}`">
                 <v-btn
                   color="primary"
-                  v-text="'Remind'"
+                  @click="remindInvoiceDialog"
+                  v-text="'Ingatkan'"
                 />
               </v-col>
               <v-col cols="auto" class="pe-0">
                 <v-btn
                   color="primary"
-                  v-text="'Export'"
+                  v-text="'Ekspor'"
                 />
               </v-col>
               <v-col cols="auto" class="pe-0">
                 <v-btn
                   color="primary"
                   @click="importDialog = !importDialog"
-                  v-text="'Import'"
+                  v-text="'Impor'"
                 />
               </v-col>
             </v-row>
@@ -296,7 +357,7 @@
                 font-size="24"
                 font-weight="bold"
                 class="ma-0"
-                v-text="'Import Invoices'"
+                v-text="'Impor Tagihan'"
               />
             </v-col>
             <v-col cols="auto">
@@ -336,13 +397,13 @@
                 lazy-src="/images/icon/upload-cloud-icon.svg"
               />
               <c-text
-                font-size="18"
+                font-size="16"
                 class="text-center ma-0"
-                v-text="'Drag and drop File Here to Upload'"
+                v-text="'Seret dan jatuhkan file di sini untuk Unggah atau klik di sini untuk memilih file Anda'"
               />
               <c-text
                 class="text-center mb-5"
-                v-text="'MAX. File Size : 10MB'"
+                v-text="'MAKS. Ukuran file : 10MB'"
               />
             </v-container>
             <v-card
@@ -405,7 +466,7 @@
                   class="mt-5"
                   color="primary"
                   @click="submitImport"
-                  v-text="'Submit'"
+                  v-text="'Unggah'"
                 />
               </v-row>
             </v-container>
@@ -497,18 +558,18 @@ export default {
       ],
       selectedRow: [],
       headers: [
-        { text: 'Invoice ID', value: 'invoiceNumber' },
-        { text: 'Invoice Date', value: 'date', align: 'center' },
-        { text: 'Invoice To', value: 'to', align: 'center' },
-        { text: 'Amount', value: 'amount', align: 'center' },
-        { text: 'Due Date', value: 'dueDate', align: 'center' },
+        { text: 'ID Tagihan', value: 'invoiceNumber' },
+        { text: 'Tanggal Tagihan', value: 'date', align: 'center' },
+        { text: 'Tagihan Kepada', value: 'to', align: 'center' },
+        { text: 'Jumlah', value: 'amount', align: 'center' },
+        { text: 'Batas Waktu', value: 'dueDate', align: 'center' },
         {
-          text: 'Status Invoice',
+          text: 'Status Tagihan',
           value: 'statusInvoice',
           align: 'center',
           filter: this.filterByCategory
         },
-        { text: 'Status Payment', value: 'statusPayment', align: 'center' },
+        { text: 'Status Pembayaran', value: 'statusPayment', align: 'center' },
         { text: 'Action', value: 'action', align: 'center', filter: false }
       ]
     }
@@ -553,7 +614,8 @@ export default {
               amount: el.total,
               dueDate: el.date_due,
               statusInvoice: el.status,
-              statusPayment: el.status_payment
+              statusPayment: el.status_payment,
+              paymentType: el.type_payment
             })
           })
         })
@@ -629,7 +691,7 @@ export default {
       let result = null
       this.$nuxt.$emit('open-loading', true)
       await Request.del({
-        url: Api.deleteInvoice + '/' + invoiceId.toString(),
+        url: `${Api.deleteInvoice}/${invoiceId.toString()}`,
         token: this.$store.state.user.token
       })
         .then((response) => { result = response })
@@ -761,6 +823,92 @@ export default {
         })
         .finally(() => {
           this.isLoadingDetailInvoice = false
+        })
+    },
+
+    changeInvoiceStatusDialog (dataInvoice) {
+      return this.$nuxt.$emit('open-message-dialog', {
+        message: 'Ubah Status Tagihan?',
+        description: `Apakah anda yakin ingin mengubah status tagihan ini menjadi ${dataInvoice.statusInvoice.toLowerCase() === 'unpaid' ? '"Dibayar"' : '"Belum Dibayar"'}?`,
+        icon: 'mdi-help-circle-outline',
+        iconColor: 'primary',
+        actionButtons: [
+          { color: 'primary', text: 'Ya', action: () => { this.changeInvoiceStatusAction(dataInvoice) } },
+          { color: 'red', text: 'Batal' }
+        ]
+      })
+    },
+
+    async changeInvoiceStatusAction (dataInvoice) {
+      if (dataInvoice.paymentType.toLowerCase() === 'cash') {
+        let result = null
+        const status = dataInvoice.statusInvoice.toLowerCase() === 'unpaid' ? 'paid' : 'unpaid'
+        this.$nuxt.$emit('open-loading', true)
+        await Request.put({
+          url: `${Api.changeInvoiceStatus}/${dataInvoice.id}?status=${status}`,
+          token: this.$store.state.user.token
+        })
+          .then(async (response) => {
+            result = response
+            await this.fetchInvoices()
+          })
+          .catch((err) => {
+            result = err.response
+          })
+          .finally(() => {
+            this.$nuxt.$emit('open-loading', false)
+            this.$nuxt.$emit('open-snackbar', {
+              message: result.data.message !== null ? result.data.message : 'Maaf terjadi kesalahan',
+              status: result.status
+            })
+          })
+      } else {
+        this.$nuxt.$emit('open-snackbar', {
+          message: 'Pilih salah satu tagihan yang akan dikirim',
+          status: 400
+        })
+      }
+    },
+
+    remindInvoiceDialog () {
+      return this.selectedRow.length > 0
+        ? this.$nuxt.$emit('open-message-dialog', {
+          message: 'Ingatkan Tagihan?',
+          description: 'Ingatkan tagihan ini kepada klien yang bersangkutan?',
+          icon: 'mdi-help-circle-outline',
+          iconColor: 'primary',
+          actionButtons: [
+            { color: 'primary', text: 'Ya', action: () => { this.remindInvoiceAction() } },
+            { color: 'red', text: 'Batal' }
+          ]
+        })
+        : this.$nuxt.$emit('open-snackbar', {
+          message: 'Pilih salah satu tagihan yang akan dikirim',
+          status: 400
+        })
+    },
+
+    async remindInvoiceAction () {
+      const selectedInvoice = this.selectedRow[0]
+      let result = null
+      this.$nuxt.$emit('open-loading', true)
+      await Request.post({
+        url: `${Api.sendInvoice}/${selectedInvoice.id}`,
+        token: this.$store.state.user.token
+      })
+        .then(async (response) => {
+          result = response
+          await this.fetchInvoices()
+        })
+        .catch((err) => {
+          result = err.response
+        })
+        .finally(() => {
+          this.$nuxt.$emit('open-loading', false)
+          this.$nuxt.$emit('open-snackbar', {
+            message: result.data.message !== null ? result.data.message : 'Maaf terjadi kesalahan',
+            status: result.status
+          })
         })
     }
   }

@@ -12,12 +12,12 @@
             font-weight="600"
             class="ma-0"
             color="neutral700"
-            v-text="'Total Invoice'"
+            v-text="'Total Tagihan'"
           />
           <c-text
             font-size="12"
             class="ma-0"
-            v-text="'Paid'"
+            v-text="'Terbayar'"
           />
           <c-text
             font-weight="bold"
@@ -36,12 +36,12 @@
             font-weight="600"
             color="neutral700"
             class="ma-0"
-            v-text="'Total Invoice'"
+            v-text="'Total Tagihan'"
           />
           <c-text
             font-size="12"
             class="ma-0"
-            v-text="'Unpaid'"
+            v-text="'Belum Terbayar'"
           />
           <c-text
             font-weight="bold"
@@ -63,25 +63,20 @@
               <v-col cols="auto" align-self="center">
                 <c-text
                   font-size="14"
-                  font-weight="bold"
                   class="ma-0"
-                  v-text="'Create New'"
-                />
-                <c-text
-                  font-size="12"
-                  font-weight="bold"
-                  class="ma-0"
-                  v-text="'Invoice'"
-                />
+                >
+                  Ingin membuat<br>
+                  tagihan?
+                </c-text>
               </v-col>
               <v-col cols="auto">
                 <v-btn
                   color="primary"
+                  class="btn-start-now-wrapper"
                   depressed
-                  large
                   tile
                   to="/invoices/create"
-                  v-text="'Start Now'"
+                  v-text="'Mulai Sekarang'"
                 />
               </v-col>
             </v-row>
@@ -112,3 +107,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .btn-start-now-wrapper {
+    font-size: 14px;
+  }
+</style>

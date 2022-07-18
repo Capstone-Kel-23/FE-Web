@@ -5,16 +5,18 @@
       app
       elevation="0"
     >
-      <v-btn
-        icon
-        color="black"
-        link
-        @click="() => $router.go(-1)"
-      >
-        <v-icon size="40">
-          mdi-chevron-left
-        </v-icon>
-      </v-btn>
+      <div>
+        <v-btn
+          icon
+          color="black"
+          link
+          @click="backDirection"
+        >
+          <v-icon size="40">
+            mdi-chevron-left
+          </v-icon>
+        </v-btn>
+      </div>
       <v-spacer />
       <c-text
         font-size="24"
@@ -97,6 +99,14 @@ export default {
         header = 'Daftar'
       }
       return header
+    }
+  },
+
+  methods: {
+    backDirection () {
+      return this.routePath === '/login' || this.routePath === '/register'
+        ? this.$router.push('/')
+        : this.$router.go(-1)
     }
   }
 }

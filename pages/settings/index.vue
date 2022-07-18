@@ -11,7 +11,7 @@
             <c-text
               v-if="!mobile"
               font-size="32"
-              v-text="'Settings'"
+              v-text="'Pengaturan'"
             />
             <!-- END HEADER TITLE -->
           </v-row>

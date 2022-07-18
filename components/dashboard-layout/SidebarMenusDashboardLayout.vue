@@ -68,7 +68,7 @@
           />
         </v-list-item-action>
         <v-list-item-content>
-          <v-list-item-title v-text="'Log out'" />
+          <v-list-item-title v-text="'Keluar'" />
         </v-list-item-content>
       </v-list-item>
     </v-list>

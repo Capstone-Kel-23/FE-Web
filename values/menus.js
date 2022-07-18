@@ -22,17 +22,17 @@ export default [
     to: '/dashboard'
   },
   {
-    title: 'Invoices',
+    title: 'Tagihan',
     icon: '/images/icon/nav-drawer/invoice.svg',
     to: '/invoices'
   },
   {
-    title: 'Clients',
+    title: 'Klien',
     icon: '/images/icon/nav-drawer/add-user-group.svg',
     to: '/clients'
   },
   {
-    title: 'Settings',
+    title: 'Pengaturan',
     icon: '/images/icon/nav-drawer/settings.svg',
     to: '/settings'
   }

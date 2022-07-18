@@ -5,7 +5,7 @@
         <c-text
           font-size="14"
           font-weight="bold"
-          v-text="'Top 3 Client'"
+          v-text="'3 Klien Teratas'"
         />
         <v-card
           v-for="(client, index) in topClientsMobileReport"
@@ -37,7 +37,7 @@
                       <c-text
                         font-size="12"
                         class="ma-0"
-                        v-text="client.invoicesValue"
+                        v-text="`${client.invoicesValue} Tagihan`"
                       />
                     </v-col>
                   </v-row>

@@ -16,7 +16,7 @@
           >
             <c-text
               class="ma-0"
-              v-text="'Business'"
+              v-text="'Bisnis'"
             />
             <v-btn
               text
@@ -28,7 +28,7 @@
             <c-text
               color="neutral700"
               class="ma-0"
-              v-text="'All of the preferences below are directly associated with the current business you are currently using. Changes on this page will only affect the current business.'"
+              v-text="'Semua preferensi di bawah ini terkait langsung dengan bisnis saat ini yang sedang Anda gunakan. Perubahan pada halaman ini hanya akan mempengaruhi bisnis saat ini.'"
             />
           </v-row>
           <v-row><v-divider class="neutral600" /></v-row>
@@ -37,11 +37,11 @@
               color="neutral700"
               class="ma-0 mb-1"
             >
-              Business Name <span class="red--text">*</span>
+              Nama Bisnis <span class="red--text">*</span>
             </c-text>
             <v-text-field
               v-model="businessName"
-              placeholder="Enter Business Name"
+              placeholder="Masukkan Nama Bisnis"
               solo
               background-color="neutral400"
             />
@@ -52,11 +52,11 @@
               color="neutral700"
               class="ma-0 mb-1"
             >
-              Job <span class="red--text">*</span>
+              Pekerjaan <span class="red--text">*</span>
             </c-text>
             <v-text-field
               v-model="job"
-              placeholder="Enter Job"
+              placeholder="Masukkan Pekerjaan"
               solo
               background-color="neutral400"
             />
@@ -65,7 +65,7 @@
           <v-row class="pa-4">
             <v-btn
               color="primary"
-              v-text="'Save Changes'"
+              v-text="'Simpan Perubahan'"
             />
           </v-row>
         </v-container>

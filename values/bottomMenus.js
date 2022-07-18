@@ -5,22 +5,22 @@ export default [
     to: '/dashboard'
   },
   {
-    title: 'Invoices',
+    title: 'Tagihan',
     icon: 'mdi-receipt',
     to: '/invoices'
   },
   {
-    title: 'Clients',
+    title: 'Klien',
     icon: 'mdi-account-group',
     to: '/clients'
   },
   {
-    title: 'Reports',
+    title: 'Laporan',
     icon: 'mdi-finance',
     to: '/reports'
   },
   {
-    title: 'Settings',
+    title: 'Pengaturan',
     icon: 'mdi-cog',
     to: '/settings'
   }

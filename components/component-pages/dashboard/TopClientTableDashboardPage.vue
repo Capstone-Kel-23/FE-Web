@@ -9,7 +9,7 @@
               font-size="14"
               color="black"
               class="text-center ma-0"
-              v-text="'Top Client'"
+              v-text="'Peringkat'"
             />
           </th>
           <th>
@@ -18,7 +18,7 @@
               font-size="14"
               color="black"
               class="text-center ma-0"
-              v-text="'Client'"
+              v-text="'Klien'"
             />
           </th>
           <th>
@@ -27,7 +27,7 @@
               font-size="14"
               color="black"
               class="text-center ma-0"
-              v-text="'Total Invoices'"
+              v-text="'Total Tagihan'"
             />
           </th>
           <th>
@@ -36,7 +36,7 @@
               font-size="14"
               color="black"
               class="text-center ma-0"
-              v-text="'Total Payment'"
+              v-text="'Total Pembayaran'"
             />
           </th>
         </tr>

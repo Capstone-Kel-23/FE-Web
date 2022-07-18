@@ -30,7 +30,7 @@
               <c-text
                 font-size="32"
                 class="ma-0"
-                v-text="'New Invoices'"
+                v-text="'Tagihan Baru'"
               />
             </v-col>
           </v-row>
@@ -38,7 +38,7 @@
         <c-text
           v-else
           font-size="32"
-          v-text="'New Invoices'"
+          v-text="'Tagihan Baru'"
         />
         <!-- END HEADER TITLE -->
 
@@ -120,14 +120,14 @@
             width="100%"
             outlined
             color="primary"
-            v-text="'Mark Paid'"
+            v-text="'Tandai Dibayar'"
           />
           <v-btn
             class="mt-5"
             width="100%"
             color="primary"
             @click="submit"
-            v-text="'Save'"
+            v-text="'Simpan'"
           />
         </v-form>
         <!-- END COMPANY FORM -->

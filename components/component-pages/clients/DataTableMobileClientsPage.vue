@@ -5,7 +5,7 @@
       <v-text-field
         v-model="searchKeyword"
         class="search-field-wrapper mx-3"
-        placeholder="Search Client"
+        placeholder="Cari Klien"
         color="primary"
         hide-details=""
         background-color="white"
@@ -76,15 +76,15 @@
         <v-img
           max-width="246"
           max-height="225"
-          class="mx-auto mt-5"
-          src="/images/illustrations/support-bw.png"
+          class="mx-auto mt-10"
+          src="/images/illustrations/payment-bw.png"
           lazy-src="/images/illustrations/support-bw.png"
         />
         <c-text
           font-size="12"
           color="primary"
           class="text-center mt-5"
-          v-text="'Your invoices will show up here. Click the plus button below to Create your first invoice!'"
+          v-text="'Klien Anda akan muncul di sini'"
         />
       </v-container>
       <!-- END CLIENTS LIST -->

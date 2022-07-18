@@ -18,7 +18,7 @@
               <c-text
                 font-size="32"
                 class="ma-0"
-                v-text="'Invoices'"
+                v-text="'Tagihan'"
               />
             </v-col>
             <v-col
@@ -34,7 +34,7 @@
                   class="pe-1"
                   v-text="'mdi-plus'"
                 />
-                Add New
+                Tambah Baru
               </v-btn>
             </v-col>
           </v-row>
@@ -44,7 +44,7 @@
                 font-size="20"
                 font-weight="bold"
                 class="text-center"
-                v-text="'Invoices'"
+                v-text="'Tagihan'"
               />
             </v-col>
           </v-row>
