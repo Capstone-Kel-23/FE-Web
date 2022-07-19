@@ -17,7 +17,9 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider />
-      <v-list-item>
+      <v-list-item
+        @click="openRemindDialog"
+      >
         <v-list-item-content>
           <c-text
             font-size="12"
@@ -27,12 +29,14 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider />
-      <v-list-item>
+      <v-list-item
+        @click="exportInvoice"
+      >
         <v-list-item-content>
           <c-text
             font-size="12"
             class="ma-0 text-center"
-            v-text="'Download Template'"
+            v-text="'Unduh'"
           />
         </v-list-item-content>
       </v-list-item>
@@ -60,7 +64,9 @@ export default {
 
   emits: [
     'close-dialog',
-    'open-delete-dialog'
+    'open-delete-dialog',
+    'open-remind-dialog',
+    'export-invoice'
   ],
 
   methods: {
@@ -70,6 +76,14 @@ export default {
 
     openDeleteDialog () {
       return this.$emit('open-delete-dialog')
+    },
+
+    openRemindDialog () {
+      return this.$emit('open-remind-dialog')
+    },
+
+    exportInvoice () {
+      return this.$emit('export-invoice')
     }
   }
 }

@@ -102,7 +102,6 @@
             max-width="80"
             max-height="65"
             src="/images/logo/example-company-logo.png"
-            lazy-src="/images/logo/example-company-logo.png"
           />
           <v-skeleton-loader
             v-else
@@ -126,7 +125,7 @@
             <c-text
               font-size="12"
               color="neutral700"
-              v-text="invoice.businessEmail"
+              v-text="invoice.email"
             />
           </div>
           <div v-else>

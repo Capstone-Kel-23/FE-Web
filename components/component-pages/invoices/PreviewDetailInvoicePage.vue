@@ -4,13 +4,31 @@
     class="pa-0 px-3"
   >
     <v-container>
-      <c-text
-        font-size="28"
-        font-weight="bold"
-        style="color: #263D35"
-        class="ma-0 text-right"
-        v-text="'Invoice'"
-      />
+      <v-row dense>
+        <v-col>
+          <c-text
+            font-size="28"
+            font-weight="bold"
+            style="color: #263D35"
+            class="ma-0 text-right"
+            v-text="'Invoice'"
+          />
+        </v-col>
+        <v-col
+          cols="auto"
+          align-self="center"
+        >
+          <v-btn
+            icon
+            @click="closeDialog"
+          >
+            <v-icon
+              size="30"
+              v-text="'mdi-window-close'"
+            />
+          </v-btn>
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="auto">
           <v-img

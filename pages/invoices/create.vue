@@ -116,13 +116,6 @@
             @input-tax="(value) => {dataForm.tax = value ; setTotal()}"
           />
           <v-btn
-            class="mt-15"
-            width="100%"
-            outlined
-            color="primary"
-            v-text="'Tandai Dibayar'"
-          />
-          <v-btn
             class="mt-5"
             width="100%"
             color="primary"

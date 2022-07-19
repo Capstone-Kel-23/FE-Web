@@ -41,6 +41,7 @@
             </c-text>
             <v-text-field
               v-model="businessName"
+              :rules="requiredRules('Nama Bisnis')"
               placeholder="Masukkan Nama Bisnis"
               solo
               background-color="neutral400"
@@ -56,6 +57,7 @@
             </c-text>
             <v-text-field
               v-model="job"
+              :rules="requiredRules('Pekerjaan')"
               placeholder="Masukkan Pekerjaan"
               solo
               background-color="neutral400"
@@ -65,6 +67,7 @@
           <v-row class="pa-4">
             <v-btn
               color="primary"
+              @click="submitDialog"
               v-text="'Simpan Perubahan'"
             />
           </v-row>
@@ -93,8 +96,39 @@ export default {
 
   methods: {
     setDummy () {
-      this.businessName = 'Nabila Salma K'
+      this.businessName = 'PT Mitra Makmur Sejahtera'
       this.job = 'Sales Manager'
+    },
+
+    requiredRules (field) {
+      return [
+        v => !!v || `${field} tidak boleh kosong!`
+      ]
+    },
+
+    submitDialog () {
+      return this.$refs.form.validate()
+        ? this.$nuxt.$emit('open-message-dialog', {
+          message: 'Ubah Profil Bisnis',
+          description: 'Apakah anda yakin ingin mengubah informasi bisnis anda?',
+          icon: 'mdi-help-circle-outline',
+          iconColor: 'primary',
+          actionButtons: [
+            { color: 'primary', text: 'Ya', action: () => { this.submitAction() } },
+            { color: 'red', text: 'Batal' }
+          ]
+        })
+        : this.$nuxt.$emit('open-snackbar', {
+          message: 'Form tidak valid, silakan cek kembali!',
+          status: 400
+        })
+    },
+
+    submitAction () {
+      return this.$nuxt.$emit('open-snackbar', {
+        message: 'Profil Bisnis berhasil diubah!',
+        status: 200
+      })
     }
   }
 }

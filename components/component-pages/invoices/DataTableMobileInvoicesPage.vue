@@ -422,14 +422,15 @@
             outlined
             color="primary"
             @click="cancelAllSelection"
-            v-text="'Cancel'"
+            v-text="'Batal'"
           />
         </v-col>
         <v-col>
           <v-btn
             block
             color="primary"
-            v-text="'Remind'"
+            @click="remindInvoiceDialog"
+            v-text="'Ingatkan'"
           />
         </v-col>
       </v-row>
@@ -516,9 +517,9 @@ export default {
         },
         token: this.$store.state.user.token
       })
-        .then((response) => {
+        .then(async (response) => {
           this.invoices = []
-          response.data.data.map((el) => {
+          await response.data.data.map((el) => {
             this.invoices.push({
               id: el.id,
               invoiceNumber: el.invoice_number,
@@ -534,7 +535,7 @@ export default {
             if (this.currentPageItems <= this.itemsPerPage) {
               this.currentPageItems++
             }
-            return el
+            return null
           })
         })
         .catch((err) => {
@@ -701,6 +702,49 @@ export default {
       const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
       const i = Math.floor(Math.log(bytes) / Math.log(k))
       return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+    },
+
+    remindInvoiceDialog () {
+      return this.selectedInvoices().length > 0
+        ? this.$nuxt.$emit('open-message-dialog', {
+          message: 'Ingatkan Tagihan?',
+          description: 'Ingatkan tagihan ini kepada klien yang bersangkutan?',
+          icon: 'mdi-help-circle-outline',
+          iconColor: 'primary',
+          actionButtons: [
+            { color: 'primary', text: 'Ya', action: () => { this.remindInvoiceAction() } },
+            { color: 'red', text: 'Batal' }
+          ]
+        })
+        : this.$nuxt.$emit('open-snackbar', {
+          message: 'Pilih salah satu tagihan yang akan dikirim',
+          status: 400
+        })
+    },
+
+    async remindInvoiceAction () {
+      const selectedInvoice = this.selectedInvoices()[0]
+      let result = null
+      this.$nuxt.$emit('open-loading', true)
+      await Request.post({
+        url: `${Api.sendInvoice}/${selectedInvoice.id}`,
+        token: this.$store.state.user.token
+      })
+        .then(async (response) => {
+          result = response
+          await this.fetchInvoices()
+          await this.cancelAllSelection()
+        })
+        .catch((err) => {
+          result = err.response
+        })
+        .finally(() => {
+          this.$nuxt.$emit('open-loading', false)
+          this.$nuxt.$emit('open-snackbar', {
+            message: result.data.message !== null ? result.data.message : 'Maaf terjadi kesalahan',
+            status: result.status
+          })
+        })
     }
   }
 }

@@ -1,5 +1,25 @@
 <template>
   <v-container class="pa-0 mt-3">
+    <VueHtml2pdf
+      v-show="false"
+      ref="invoiceContainer"
+      :show-layout="true"
+      :float-layout="true"
+      :enable-download="true"
+      :preview-modal="true"
+      :paginate-elements-by-height="1400"
+      :filename="`${detailInvoice.invoiceNumber} - Export`"
+      :pdf-quality="2"
+      pdf-format="a6"
+      pdf-orientation="portrait"
+      pdf-content-width="400px"
+    >
+      <section slot="pdf-content">
+        <ExportContainer
+          :invoice="detailInvoice"
+        />
+      </section>
+    </VueHtml2pdf>
     <v-dialog
       v-model="detailInvoiceDialog"
       max-width="600"
@@ -102,6 +122,7 @@
       <template #[`item.dueDate`]="{ item }">
         <v-tooltip
           top
+          transition="scroll-y-reverse-transition"
           :color="$moment(item.dueDate).diff($moment(), 'days') > 0 ? 'orange' : ''"
         >
           <template #activator="{ on, attrs }">
@@ -118,7 +139,7 @@
             </div>
           </template>
           <span>
-            {{ $moment(item.date).format('DD MMM, YYYY') }}
+            {{ $moment(item.dueDate).format('DD MMM, YYYY') }}
           </span>
         </v-tooltip>
       </template>
@@ -322,6 +343,7 @@
               <v-col cols="auto" class="pe-0">
                 <v-btn
                   color="primary"
+                  @click="generateExport"
                   v-text="'Ekspor'"
                 />
               </v-col>
@@ -521,6 +543,7 @@
 
 <script>
 import PreviewDetailInvoicePage from './PreviewDetailInvoicePage.vue'
+import ExportContainer from '@/components/ExportContainer.vue'
 import * as numberFormat from '@/utils/numberFormat'
 import * as Api from '@/values/api'
 import * as Request from '@/utils/request'
@@ -529,7 +552,8 @@ export default {
   name: 'DataTableInvoicesPage',
 
   components: {
-    PreviewDetailInvoicePage
+    PreviewDetailInvoicePage,
+    ExportContainer
   },
 
   data () {
@@ -910,6 +934,75 @@ export default {
             status: result.status
           })
         })
+    },
+
+    async generateExport () {
+      if (this.selectedRow.length > 0) {
+        const selectedInvoice = this.selectedRow[0]
+        this.$nuxt.$emit('open-loading', true)
+        await Request.get({
+          url: `${Api.detailInvoiceById}/${selectedInvoice.id}`,
+          token: this.$store.state.user.token
+        })
+          .then(async (response) => {
+            const result = response.data
+            this.detailInvoice = {
+              id: result.data.invoice.id,
+              invoiceNumber: result.data.invoice.invoice_number,
+              firstName: result.data.invoice.client.first_name,
+              lastName: result.data.invoice.client.last_name,
+              email: result.data.invoice.client.email,
+              phone: result.data.invoice.client.phone_number,
+              province: result.data.invoice.client.state,
+              city: result.data.invoice.client.city,
+              postalCode: result.data.invoice.client.postal_code,
+              businessName: 'PT Mitra Makmur Sejahtera',
+              businessEmail: 'mitramakmur@gmail.com',
+              date: result.data.invoice.date,
+              dueDate: result.data.invoice.date_due,
+              paymentType: result.data.invoice.type_payment === 'online' ? 'Online' : 'Cash',
+              subTotal: result.data.invoice.sub_total,
+              total: result.data.invoice.total,
+              discount: 0,
+              tax: 0,
+              items: []
+            }
+            await result.data.invoice.additional_costs.map((el) => {
+              if (el.type.toLowerCase() === 'tax') {
+                this.detailInvoice.tax = el.total
+              } else if (el.type.toLowerCase() === 'disc') {
+                this.detailInvoice.discount = el.total
+              }
+              return null
+            })
+            await result.data.invoice.items.map((item) => {
+              return this.detailInvoice.items.push({
+                id: item.id,
+                name: item.name,
+                quantity: item.quantity,
+                description: item.description,
+                price: item.price,
+                amount: item.price * item.quantity
+              })
+            })
+            await this.$refs.invoiceContainer.generatePdf()
+          })
+          .catch((err) => {
+            const result = err.response
+            this.$nuxt.$emit('open-snackbar', {
+              message: result.data.message,
+              status: result.status
+            })
+          })
+          .finally(() => {
+            this.$nuxt.$emit('open-loading', false)
+          })
+      } else {
+        this.$nuxt.$emit('open-snackbar', {
+          message: 'Pilih salah satu tagihan yang akan diunduh',
+          status: 400
+        })
+      }
     }
   }
 }

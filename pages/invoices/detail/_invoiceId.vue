@@ -4,6 +4,26 @@
     fluid
     :class="`main-content-bg fill-height align-start ${mobile ? 'pa-5' : 'pa-10'}`"
   >
+    <VueHtml2pdf
+      v-show="false"
+      ref="invoiceContainer"
+      :show-layout="true"
+      :float-layout="true"
+      :enable-download="true"
+      :preview-modal="true"
+      :paginate-elements-by-height="1400"
+      :filename="`${detailInvoice.invoiceNumber} - Export`"
+      :pdf-quality="2"
+      pdf-format="a6"
+      pdf-orientation="portrait"
+      pdf-content-width="400px"
+    >
+      <section slot="pdf-content">
+        <ExportContainer
+          :invoice="detailInvoice"
+        />
+      </section>
+    </VueHtml2pdf>
     <v-dialog
       v-model="moreActionDialog"
       content-class="mobile-nav-dialog ma-0"
@@ -11,7 +31,9 @@
     >
       <MoreActionDialogDetailMobileInvoicePage
         @open-delete-dialog="deleteInvoiceDialog"
+        @open-remind-dialog="remindInvoiceDialog"
         @close-dialog="moreActionDialog = !moreActionDialog"
+        @export-invoice="generateExport"
       />
     </v-dialog>
     <v-dialog
@@ -22,6 +44,16 @@
       <DeleteDialogDetailMobileInvoicePage
         @close-dialog="deleteDialog = !deleteDialog"
         @delete-invoice="deleteInvoiceAction"
+      />
+    </v-dialog>
+    <v-dialog
+      v-model="remindDialog"
+      content-class="mobile-nav-dialog ma-0"
+      transition="dialog-bottom-transition"
+    >
+      <RemindDialogDetailMobileInvoicePage
+        @close-dialog="remindDialog = !remindDialog"
+        @remind-invoice="remindInvoiceAction"
       />
     </v-dialog>
     <v-row>
@@ -79,8 +111,10 @@
 
 <script>
 import PreviewDetailMobileInvoicePage from '@/components/component-pages/invoices/PreviewDetailMobileInvoicePage.vue'
+import ExportContainer from '@/components/ExportContainer.vue'
 import MoreActionDialogDetailMobileInvoicePage from '~/components/component-pages/invoices/MoreActionDialogDetailMobileInvoicePage.vue'
 import DeleteDialogDetailMobileInvoicePage from '~/components/component-pages/invoices/DeleteDialogDetailMobileInvoicePage.vue'
+import RemindDialogDetailMobileInvoicePage from '~/components/component-pages/invoices/RemindDialogDetailMobileInvoicePage.vue'
 import * as Api from '@/values/api'
 import * as Request from '@/utils/request'
 
@@ -89,8 +123,10 @@ export default {
 
   components: {
     PreviewDetailMobileInvoicePage,
+    ExportContainer,
     MoreActionDialogDetailMobileInvoicePage,
-    DeleteDialogDetailMobileInvoicePage
+    DeleteDialogDetailMobileInvoicePage,
+    RemindDialogDetailMobileInvoicePage
   },
 
   layout: 'dashboard',
@@ -102,7 +138,20 @@ export default {
       moreActionDialog: false,
       isLoadingDetailInvoice: false,
       deleteDialog: false,
+      remindDialog: false,
       detailInvoice: {}
+      // htmlToPdfOptions: {
+      //   image: {
+      //     type: 'jpg',
+      //     quality: 1
+      //   },
+      //   html2canvas: {
+      //     scale: 1,
+      //     useCORS: true,
+      //     dpi: 300,
+      //     letterRendering: true
+      //   }
+      // }
     }
   },
 
@@ -194,19 +243,36 @@ export default {
         })
     },
 
+    remindInvoiceDialog () {
+      this.moreActionDialog = !this.moreActionDialog
+      this.remindDialog = !this.remindDialog
+    },
+
+    async remindInvoiceAction () {
+      let result = null
+      this.$nuxt.$emit('open-loading', true)
+      await Request.post({
+        url: `${Api.sendInvoice}/${this.invoiceId}`,
+        token: this.$store.state.user.token
+      })
+        .then((response) => {
+          result = response
+          this.fetchDetailInvoice()
+        })
+        .catch((err) => { result = err.response })
+        .finally(() => {
+          this.remindDialog = !this.remindDialog
+          this.$nuxt.$emit('open-loading', false)
+          this.$nuxt.$emit('open-snackbar', {
+            message: result.data.message !== null ? result.data.message : 'Maaf terjadi kesalahan',
+            status: result.status
+          })
+        })
+    },
+
     deleteInvoiceDialog () {
       this.moreActionDialog = !this.moreActionDialog
       this.deleteDialog = !this.deleteDialog
-      // this.$nuxt.$emit('open-message-dialog', {
-      //   message: 'Hapus Tagihan',
-      //   description: 'Apakah anda yakin ingin menghapus tagihan ini?',
-      //   icon: 'mdi-help-circle-outline',
-      //   iconColor: 'primary',
-      //   actionButtons: [
-      //     { color: 'primary', text: 'Ya', action: () => { this.deleteInvoiceAction(invoiceId) } },
-      //     { color: 'red', text: 'Batal' }
-      //   ]
-      // })
     },
 
     async deleteInvoiceAction () {
@@ -228,6 +294,10 @@ export default {
             status: result.status
           })
         })
+    },
+
+    generateExport () {
+      this.$refs.invoiceContainer.generatePdf()
     }
   }
 }
