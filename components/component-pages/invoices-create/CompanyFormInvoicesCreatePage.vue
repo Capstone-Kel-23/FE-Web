@@ -124,7 +124,7 @@
           </v-container>
           <!-- END FORM FIELD -->
         </v-col>
-        <v-col class="d-flex">
+        <!-- <v-col class="d-flex">
           <div>
             <c-text
               font-size="18"
@@ -147,7 +147,7 @@
           >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-        </v-col>
+        </v-col> -->
       </v-row>
     </v-container>
   </v-container>
