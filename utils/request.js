@@ -28,6 +28,14 @@ export const put = async ({ entryUrl = entry, url, data = {}, headers = null, to
     })
 }
 
+export const patch = async ({ entryUrl = entry, url, data = {}, headers = null, token = null }) => {
+  return !token
+    ? await Axios.patch(entryUrl + url, data)
+    : await Axios.patch(entryUrl + url, data, {
+      headers: { Authorization: 'Bearer ' + token, ...headers }
+    })
+}
+
 export const del = async ({ entryUrl = entry, url, data = {}, headers = null, token = null }) => {
   return !token
     ? await Axios.delete(entryUrl + url, {
